@@ -1,5 +1,6 @@
 import { dbQuery } from "../db/db.js"
 import bcrypt from "bcrypt" 
+import jwt from "jsonwebtoken"
 
 
 class UserService{
@@ -49,6 +50,18 @@ class UserService{
         if (!correctPsw){
             throw new Error("Password not correct")
         }
+        
+        const userData = user.rows.at(0)
+        
+        const JWT_payload = {
+            userId: userData.id,
+            username: userData.username,
+            role: userData.role
+        }
+
+        const token = jwt.sign(JWT_payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || "7d"})
+
+        return {token, userData}
         
     }
 

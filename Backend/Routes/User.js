@@ -25,8 +25,15 @@ user.get("/", async (req, res) => {
     try 
     {
         const loginReq = LoginUserSchema.parse(req.body)
-        const login = await userService.Login(loginReq)
-        res.send("Login")
+        const {token, userData} = await userService.Login(loginReq)
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 7days
+        })
+
+        res.send({message: "Logged in", user: userData})
         
     } catch (e) {
         if (e.name == "ZodError"){
@@ -70,7 +77,7 @@ user.get("/", async (req, res) => {
 }).patch("/{:id}", (req, res) => { // Update user
     res.send("Muokkaa id", req.params.id)
 
-    
+
 }).put("/{:id}", (req, res) => { // Update user
 
     res.send("Muokkaa id", req.params.id)
