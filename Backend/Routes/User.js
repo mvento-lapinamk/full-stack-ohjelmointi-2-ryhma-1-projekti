@@ -11,6 +11,7 @@ user.use((req, res, next) => {
     next()
 })
 
+
 // Hae kaikki käyttäjät
 user.get("/", async (req, res) => {
 
@@ -19,19 +20,22 @@ user.get("/", async (req, res) => {
     console.log(users)
     res.send(users)
 
+
 }).get("/login", async (req, res) => { // Kirjaudu sisään
     try 
     {
         const loginReq = LoginUserSchema.parse(req.body)
-        
         const login = await userService.Login(loginReq)
+        res.send("Login")
         
     } catch (e) {
         if (e.name == "ZodError"){
             console.log(e)
+            res.status(400).json({error: "Invalid login request body", detail: e.message})
         }
-        res.status(400).json({error: "Invalid login request body", detail: e})
+        res.status(400).json({error: e.message})
     }
+
 
 }).get("/{:id}", async (req, res) => { // Hae käyttäjä id:llä
 
@@ -40,24 +44,33 @@ user.get("/", async (req, res) => {
 
     res.send(user[0])
 
-}).post("/", async (req, res) => { // Luo käyttäjä
+
+}).post("/register", async (req, res) => { // Luo käyttäjä
     try{
         const newUser = CreateUserSchema.parse(req.body)
+        console.log(newUser)
     
         const user = await userService.CreateUser(newUser)
-        res.send("Käyttäjä luotu")
+
+        res.send({msg: "Käyttäjä luotu", user: user})
     } catch (e){
-        console.log(e)
-        res.status(400).json({error: "Invalid request body", detail: e})
+        if (e.name == "ZodError"){
+            console.log(e)
+            res.status(400).json({error: "Invalid login request body", detail: e.message})
+        }
+        res.status(400).json({error: e.message})
     }
+
 
 }).delete("/{:id}", (req, res) => { // Poista käyttäjä
     req.body
     res.send("Delete id", req.params.id)
 
+
 }).patch("/{:id}", (req, res) => { // Update user
     res.send("Muokkaa id", req.params.id)
 
+    
 }).put("/{:id}", (req, res) => { // Update user
 
     res.send("Muokkaa id", req.params.id)
