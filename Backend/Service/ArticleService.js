@@ -6,6 +6,8 @@ export class ArticleService{
         const query = "SELECT * FROM articles"
         const articles = await dbQuery(query)
 
+        console.log(articles)
+
         if (articles.rowCount == 0){
             throw new Error("Articles not found")
         }
@@ -22,7 +24,11 @@ export class ArticleService{
         if (article.rowCount == 0){
             throw new Error("Article not found")
         }
-        
+
         return article.rows
+    }
+
+    async CreateArticle(createArticleReq){
+
     }
 }

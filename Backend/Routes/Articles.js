@@ -2,6 +2,8 @@
 import {Router} from "express"
 import { ArticleService } from "../Service/ArticleService.js"
 import { requireAuth } from "../middleware/auth.js"
+import z from "zod"
+import { CreateArticleSchema } from "../Models/ArticleSchemas.js"
 
 const articleService = new ArticleService()
 
@@ -19,9 +21,10 @@ articles.get("/", async (req, res) => { // Hae kaikki artikkelit
         
         const articles = await articleService.GetArticles()
         res.send(articles)
+        console.log("Artikkelit")
 
     } catch (err){
-        res.send(404).json({message: "Articles not found"})
+        res.status(404).json({error: "Articles not found"})
     }
 
 }).get("/{:id}", async (req, res) => { // Hae yhden artikkelin tiedot
@@ -30,11 +33,21 @@ articles.get("/", async (req, res) => { // Hae kaikki artikkelit
         res.send(article)
 
     } catch (err){
-        res.send(404).json({message: "Article not found"})
+        res.send(404).json({error: "Article not found"})
     }
     
-}).post("/", requireAuth ,async (req, res) => { // Luo artikkelit
-    res.send("Artikkelin luonti")
+}).post("/", requireAuth, async (req, res) => { // Luo artikkelit
+    try{
+        const createArticleReq = CreateArticleSchema.parse(req.body)
+        res.send("Artikkelin luonti")
+
+    } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid body to create article", detail: err.message})
+        }
+
+        res.status(500).json({error: e.message})
+    }
 
 
 

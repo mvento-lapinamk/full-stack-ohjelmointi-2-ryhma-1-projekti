@@ -18,7 +18,7 @@ app.use(cookieParser())
 
 
 app.use("/user", user)
-app.use("/article", articles)
+app.use("/articles", articles)
 
 app.listen(process.env.PORT, () => {
     console.log("Backend started!")

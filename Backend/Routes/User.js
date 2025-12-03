@@ -21,7 +21,7 @@ user.get("/", async (req, res) => {
         res.send(users)
 
     } catch (err){
-        res.status(400).json({message: "Not found"})
+        res.status(404).json({message: "Not found"})
     }
 
 
@@ -30,7 +30,7 @@ user.get("/", async (req, res) => {
     {
         const loginReq = LoginUserSchema.parse(req.body)
         const {token, userData} = await userService.Login(loginReq)
-        
+
         res.cookie("token", token, {
             httpOnly: true,
             sameSite: "lax",
@@ -45,7 +45,7 @@ user.get("/", async (req, res) => {
             console.log(e)
             res.status(400).json({error: "Invalid login request body", detail: e.message})
         }
-        res.status(400).json({error: e.message})
+        res.status(404).json({error: e.message})
     }
 
 
