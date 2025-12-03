@@ -13,11 +13,13 @@ export async function requireAuth(req, res, next){
     const userFromToken = jwt.verify(token, process.env.JWT_SECRET)
     
     // Tarkistus, että käyttäjä löytyy
-    const user = await userService.UserByUsername(userFromToken)
+    const user = await userService.UserById(userFromToken.userId)
     
     if (user.rowCount == 0){
         return res.status(401).json({message: "Not Found"})
     }
+
+    // Käyttäjä ei sama
     if (user.rows.at(0).username != userFromToken.username){
         return res.status(401).json({message: "Not authorized"})
     }

@@ -1,6 +1,6 @@
 import {Router} from "express"
 import { UserService } from "../Service/UserService.js"
-import { CreateUserSchema, LoginUserSchema } from "../Models/UserSchemas.js"
+import { ChangePswSchema, CreateUserSchema, LoginUserSchema, ModifyUserSchema } from "../Models/UserSchemas.js"
 import { requireAdmin, requireAuth } from "../middleware/auth.js"
 
 const userService = new UserService()
@@ -40,12 +40,12 @@ user.get("/", async (req, res) => {
 
         res.send({message: "Logged in", user: userData})
         
-    } catch (e) {
-        if (e.name == "ZodError"){
-            console.log(e)
-            res.status(400).json({error: "Invalid login request body", detail: e.message})
+    } catch (err) {
+        if (err.name == "ZodError"){
+            console.log(err)
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
         }
-        res.status(404).json({error: e.message})
+        res.status(404).json({error: err.message})
     }
 
 
@@ -61,10 +61,17 @@ user.get("/", async (req, res) => {
 
 }).get("/{:id}", async (req, res) => { // Hae käyttäjä id:llä
 
-    const user = await userService.UserById(req.params.id)
-    console.log(user)
+    try {
+        const user = await userService.UserById(req.params.id)
+        if (user.rowCount == 0){
+            res.status(404).json({error: "User not found"})
+        }
+    
+        res.send(user.rows[0])
 
-    res.send(user[0])
+    } catch (err){
+        res.status(400).json({error: err.message})
+    }
 
 
 }).post("/register", async (req, res) => { // Luo käyttäjä
@@ -75,27 +82,75 @@ user.get("/", async (req, res) => {
         const user = await userService.CreateUser(newUser)
 
         res.send({msg: "Käyttäjä luotu", user: user})
-    } catch (e){
-        if (e.name == "ZodError"){
-            console.log(e)
-            res.status(400).json({error: "Invalid login request body", detail: e.message})
+    } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
         }
-        res.status(400).json({error: e.message})
+        res.status(400).json({error: err.message})
     }
 
 
-}).delete("/{:id}", (req, res) => { // Poista käyttäjä
-    req.body
-    res.send("Delete id", req.params.id)
+}).patch("/", requireAuth, async (req, res) => { // Update user
+    try {
+        const modifyUserRequest = ModifyUserSchema.parse(req.body)
+    
+        const modifiedUser = await userService.ChangeUserName(modifyUserRequest, req.user)
+        res.send(modifiedUser)
 
 
-}).patch("/{:id}", (req, res) => { // Update user
-    res.send("Muokkaa id", req.params.id)
+    } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
+        }
+        res.status(400).json({error: err.message})
+
+    }
 
 
-}).put("/{:id}", (req, res) => { // Update user
+}).put("/", requireAuth, async (req, res) => { // Update user
+    try{
+        const modifyUserRequest = ModifyUserSchema.parse(req.body)
+    
+        const modifiedUser = await userService.ChangeUserName(modifyUserRequest, req.user)
+        res.send(modifiedUser)
 
-    res.send("Muokkaa id", req.params.id)
+
+    } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
+        }
+        res.status(400).json({error: err.message})
+    }
+
+
+
+}).put("/password", requireAuth, async (req, res) => {
+    try{
+        const modifyPSWReq = ChangePswSchema.parse(req.body)
+        await userService.ChangePassword(modifyPSWReq, req.user)
+
+        res.send("Password changed")
+
+    } catch (err){
+        res.status(400).json({error: err.message})
+    }
+
+
+
+
+
+}).delete("/{:id}", requireAuth, async (req, res) => { // Poista käyttäjä
+    try{
+        const deletedUser = await userService.DeleteUser(req.params.id, req.user)
+
+        res.send(deletedUser)
+
+    } catch (err){
+
+        res.status(401).json({error: err.message})
+    }
+
+
 })
 
 export default user

@@ -12,3 +12,11 @@ export const LoginUserSchema = z.object({
     username: z.string().nonempty(),
     password: z.string().nonempty()
 })
+
+export const ModifyUserSchema = z.object({
+    username: z.string().nonempty()
+})
+
+export const ChangePswSchema = z.object({
+    password: z.string().nonempty()
+})

@@ -23,7 +23,8 @@ export class UserService{
         const params = [id]
         const query = "SELECT * FROM users WHERE id = $1"
         const response = await dbQuery(query, params)
-        return response.rows
+
+        return response
     }
 
     async UserByUsername(loginReq){
@@ -79,20 +80,44 @@ export class UserService{
         const insertQuery = "INSERT INTO users (first_name, last_name, username, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, role"
         const newUser = await dbQuery(insertQuery, insertParams)
 
-        console.log(newUser.rows)
-
         return newUser.rows
         
     }
 
-    async ModifyUser(id, userReq){
-        queryParams = []
-        const user = await this.UserById(id)
+    async ChangeUserName(updateData, reqUser){
+
+        const insertParams = [updateData.username, reqUser.userId]
+        const insertQuery = "UPDATE users SET username = $1 WHERE id = $2 RETURNING *"
+        const modifiedUser = await dbQuery(insertQuery, insertParams)
+
+        return modifiedUser.rows
     }
 
-    async DeleteUser(id){
-        const deleteUser = "Delete * FROM users WHERE id = $1"
-        await dbQuery(deleteUser, id)
+    async ChangePassword(updateData, reqUser){
+
+        // hash password
+        const passwordHash = await bcrypt.hash(updateData.password, 10)
+        const insertParams = [passwordHash, reqUser.userId]
+
+        const insertQuery = "UPDATE users SET password = $1 WHERE id = $2 RETURNING *"
+        const modifiedPsw = await dbQuery(insertQuery, insertParams)
+        if (modifiedPsw.rowCount == 0){
+            throw new Error("Password change failed")
+        }
+        return
+    }
+
+    async DeleteUser(id, reqUser){
+
+        console.log(id, reqUser)
+        if (id != reqUser.userId && reqUser.role != "admin"){
+            throw new Error("Unauthorized to delete user")
+        }
+        
+        const deleteQuery = "Delete FROM users WHERE id = $1 RETURNING *"
+        const deletedUser = await dbQuery(deleteQuery, [id])
+
+        return deletedUser.rows
     }
 }
 
