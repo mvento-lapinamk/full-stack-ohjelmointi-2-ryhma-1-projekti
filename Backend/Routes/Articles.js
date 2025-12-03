@@ -39,14 +39,19 @@ articles.get("/", async (req, res) => { // Hae kaikki artikkelit
 }).post("/", requireAuth, async (req, res) => { // Luo artikkelit
     try{
         const createArticleReq = CreateArticleSchema.parse(req.body)
-        res.send("Artikkelin luonti")
+        const createdArticle = await articleService.CreateArticle(createArticleReq, req.user)
+        
+        res.send(createdArticle)
 
     } catch (err){
         if (err.name == "ZodError"){
             res.status(400).json({error: "Invalid body to create article", detail: err.message})
         }
+        else{
+            res.status(500).json({error: err.message})
 
-        res.status(500).json({error: e.message})
+        }
+
     }
 
 

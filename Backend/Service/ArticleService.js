@@ -28,7 +28,22 @@ export class ArticleService{
         return article.rows
     }
 
-    async CreateArticle(createArticleReq){
+    async CreateArticle(createArticleReq, reqUser){
+
+        // Hae käyttäjän id
+        const {userId} = reqUser
+        const now = new Date()
+        const insertParams = [createArticleReq.title, createArticleReq.content, now, now, userId]
+        const query = "INSERT INTO articles (title, content, created, updated, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+
+        try{
+            const insertedArticle = await dbQuery(query, insertParams)
+
+        } catch (err){
+            throw new Error(err.message)
+        }
+
+        return insertedArticle.rows
 
     }
 }

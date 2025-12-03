@@ -11,7 +11,6 @@ export async function requireAuth(req, res, next){
     }
 
     const userFromToken = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(userFromToken.username)
     
     // Tarkistus, että käyttäjä löytyy
     const user = await userService.UserByUsername(userFromToken)

@@ -1,7 +1,7 @@
 import {z} from "zod"
 
 export const CreateArticleSchema = z.object({
-    Title: z.string(),
-    Content: z.string()
+    title: z.string(),
+    content: z.string()
 })
 
