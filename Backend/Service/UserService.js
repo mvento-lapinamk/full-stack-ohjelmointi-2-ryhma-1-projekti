@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 
-class UserService{
+export class UserService{
 
     // Kaikki käyttäjät
     async Users(){
@@ -11,7 +11,7 @@ class UserService{
         const users = await dbQuery(query)
 
         if (users.rowCount == 0){
-            throw new Error()
+            throw new Error("No users found")
         }
 
         return users.rows
@@ -96,6 +96,3 @@ class UserService{
     }
 }
 
-
-
-export default UserService

@@ -1,12 +1,13 @@
 import {Router} from "express"
-import UserService from "../Service/UserService.js"
+import { UserService } from "../Service/UserService.js"
 import { CreateUserSchema, LoginUserSchema } from "../Models/UserSchemas.js"
+import { requireAdmin, requireAuth } from "../middleware/auth.js"
 
 const userService = new UserService()
 const user = Router()
 
 user.use((req, res, next) => {
-    console.log(req.baseUrl)
+    //console.log(req.baseUrl)
 
     next()
 })
@@ -14,18 +15,22 @@ user.use((req, res, next) => {
 
 // Hae kaikki käyttäjät
 user.get("/", async (req, res) => {
+    try{
+        
+        const users = await userService.Users()
+        res.send(users)
 
-    // Get users from db
-    const users = await userService.Users()
-    console.log(users)
-    res.send(users)
+    } catch (err){
+        res.status(400).json({message: "Not found"})
+    }
 
 
-}).get("/login", async (req, res) => { // Kirjaudu sisään
+}).post("/login", async (req, res) => { // Kirjaudu sisään
     try 
     {
         const loginReq = LoginUserSchema.parse(req.body)
         const {token, userData} = await userService.Login(loginReq)
+        
         res.cookie("token", token, {
             httpOnly: true,
             sameSite: "lax",
@@ -43,6 +48,16 @@ user.get("/", async (req, res) => {
         res.status(400).json({error: e.message})
     }
 
+
+}).post("/logout", requireAuth, async (req, res) => { // Kirjaudu ulos
+
+    try{
+        res.clearCookie("token")
+        res.send("User logged out")
+
+    } catch(err){
+        res.status(400).json({message: "Logout error"})
+    }
 
 }).get("/{:id}", async (req, res) => { // Hae käyttäjä id:llä
 

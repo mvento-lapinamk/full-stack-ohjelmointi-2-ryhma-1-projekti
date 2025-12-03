@@ -5,6 +5,7 @@ import {configDotenv} from "dotenv"
 import cors from "cors"
 import user from "./Routes/User.js"
 import articles from "./Routes/Articles.js"
+import cookieParser from "cookie-parser"
 
 configDotenv()
 
@@ -13,6 +14,7 @@ const app = express()
 
 app.use(json())
 app.use(cors())
+app.use(cookieParser())
 
 
 app.use("/user", user)

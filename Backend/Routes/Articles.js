@@ -1,5 +1,9 @@
 
 import {Router} from "express"
+import { ArticleService } from "../Service/ArticleService.js"
+import { requireAuth } from "../middleware/auth.js"
+
+const articleService = new ArticleService()
 
 const articles = Router()
 
@@ -10,26 +14,42 @@ articles.use((req, res, next) => {
 })
 
 // Hae kaikki artikkelit
-articles.get("/", (req, res) => { // Hae kaikki artikkelit
-    res.send({
-        title: "Otsikko",
-        content: "Artikkelin sisältö",
-        kirjoittaja: "Kirjuri"
-    })
+articles.get("/", async (req, res) => { // Hae kaikki artikkelit
+    try{
+        
+        const articles = await articleService.GetArticles()
+        res.send(articles)
 
-}).get("/{:id}", (req, res) => { // Hae yhden artikkelin tiedot
-    res.send("Yhden artikkelin tiedot", req.params.id)
+    } catch (err){
+        res.send(404).json({message: "Articles not found"})
+    }
+
+}).get("/{:id}", async (req, res) => { // Hae yhden artikkelin tiedot
+    try{
+        const article = await articleService.GetArticleById(req.params.id)
+        res.send(article)
+
+    } catch (err){
+        res.send(404).json({message: "Article not found"})
+    }
     
-}).post("/", (req, res) => { // Luo artikkelit
+}).post("/", requireAuth ,async (req, res) => { // Luo artikkelit
     res.send("Artikkelin luonti")
 
-}).put("/{:id}", (req, res) => { // Artikkelin muokkaus
+
+
+}).put("/{:id}", requireAuth, async (req, res) => { // Artikkelin muokkaus
     res.send("Muokkaa artikkelia")
 
-}).patch("/{:id}", (req, res) => { // Artikkelin muokkaus
+
+
+}).patch("/{:id}", requireAuth, async (req, res) => { // Artikkelin muokkaus
+    
     res.send("Muokkaa artikkelia")
 
-}).delete("/{:id}", (req, res) => {
+
+}).delete("/{:id}", requireAuth, async (req, res) => {
+    
     res.send({
         id: req.params.id,
         deleted: true
