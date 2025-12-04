@@ -1,16 +1,8 @@
+// Importataan Supabase Node module
+import { createClient } from '@supabase/supabase-js'
 
-import {configDotenv} from "dotenv" 
-import {Pool} from "pg"
+// Luodaan yksittäinen Supabase client tietokantaan
+export const supabase = createClient(process.env.SUPABASE_DB_URL, process.env.SUPABASE_DB_API_KEY)
 
-configDotenv()
-console.log(process.env.PORT)
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
-})
-
-
-export const dbQuery = (query, params = []) => pool.query(query, params)
-
-export default pool
+export const dbQuery = (query, params = []) => supabase.query(query, params)
 

@@ -20,7 +20,7 @@ export async function requireAuth(req, res, next){
     }
 
     // Käyttäjä ei sama
-    if (user.rows.at(0).username != userFromToken.username){
+    if (user[0].username != userFromToken.username){
         return res.status(401).json({message: "Not authorized"})
     }
     

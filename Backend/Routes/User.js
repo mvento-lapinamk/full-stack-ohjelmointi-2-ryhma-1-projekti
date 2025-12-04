@@ -21,11 +21,11 @@ user.get("/", async (req, res) => {
         res.send(users)
 
     } catch (err){
-        res.status(404).json({message: "Not found"})
+        res.status(404).json({error: "Something went wrong"})
     }
 
-
-}).post("/login", async (req, res) => { // Kirjaudu sisään
+// Sisäänkirjautuminen
+}).post("/login", async (req, res) => {
     try 
     {
         const loginReq = LoginUserSchema.parse(req.body)
@@ -48,8 +48,8 @@ user.get("/", async (req, res) => {
         res.status(404).json({error: err.message})
     }
 
-
-}).post("/logout", requireAuth, async (req, res) => { // Kirjaudu ulos
+// Uloskirjautuminen
+}).post("/logout", requireAuth, async (req, res) => {
 
     try{
         res.clearCookie("token")
@@ -59,29 +59,24 @@ user.get("/", async (req, res) => {
         res.status(400).json({message: "Logout error"})
     }
 
-}).get("/{:id}", async (req, res) => { // Hae käyttäjä id:llä
+// Haetaan tietty käyttäjä id:n perusteella
+}).get("/{:id}", async (req, res) => {
 
     try {
         const user = await userService.UserById(req.params.id)
-        if (user.rowCount == 0){
-            res.status(404).json({error: "User not found"})
-        }
-    
-        res.send(user.rows[0])
+        res.send(user)
 
     } catch (err){
-        res.status(400).json({error: err.message})
+        res.send(404).json({error: "Something went wrong"})
     }
 
-
-}).post("/register", async (req, res) => { // Luo käyttäjä
+// Luodaan uusi käyttäjä
+}).post("/register", async (req, res) => {
     try{
         const newUser = CreateUserSchema.parse(req.body)
-        console.log(newUser)
-    
         const user = await userService.CreateUser(newUser)
 
-        res.send({msg: "Käyttäjä luotu", user: user})
+        res.send({msg: user})
     } catch (err){
         if (err.name == "ZodError"){
             res.status(400).json({error: "Invalid login request body", detail: err.message})
@@ -89,57 +84,58 @@ user.get("/", async (req, res) => {
         res.status(400).json({error: err.message})
     }
 
-
-}).patch("/", requireAuth, async (req, res) => { // Update user
-    try {
-        const modifyUserRequest = ModifyUserSchema.parse(req.body)
-    
-        const modifiedUser = await userService.ChangeUserName(modifyUserRequest, req.user)
-        res.send(modifiedUser)
-
-
-    } catch (err){
-        if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid login request body", detail: err.message})
-        }
-        res.status(400).json({error: err.message})
-
-    }
-
-
-}).put("/", requireAuth, async (req, res) => { // Update user
+// Muutetaan käyttäjän username id:n perusteella (PATCH)
+}).patch("/{:id}", requireAuth, async (req, res) => {
     try{
         const modifyUserRequest = ModifyUserSchema.parse(req.body)
-    
-        const modifiedUser = await userService.ChangeUserName(modifyUserRequest, req.user)
-        res.send(modifiedUser)
+        const modifiedUser = await userService.ChangeUserName(req.params.id, modifyUserRequest.username)
 
+        res.send(modifiedUser)
 
     } catch (err){
         if (err.name == "ZodError"){
             res.status(400).json({error: "Invalid login request body", detail: err.message})
         }
         res.status(400).json({error: err.message})
+
+    }
+
+// Muutetaan käyttäjän username id:n perusteella (PUT)
+}).put("/{:id}", requireAuth, async (req, res) => {
+    try{
+        const modifyUserRequest = ModifyUserSchema.parse(req.body)
+        const modifiedUser = await userService.ChangeUserName(req.params.id, modifyUserRequest.username)
+
+        res.send(modifiedUser)
+
+    } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
+        }
+        res.status(400).json({error: err.message})
+
     }
 
 
-
-}).put("/password", requireAuth, async (req, res) => {
+// // Muutetaan käyttäjän salasana id:n perusteella
+}).put("/password/{:id}", requireAuth, async (req, res) => {
     try{
         const modifyPSWReq = ChangePswSchema.parse(req.body)
-        await userService.ChangePassword(modifyPSWReq, req.user)
+        const modifiedUser = await userService.ChangePassword(req.params.id, modifyPSWReq.password)
 
-        res.send("Password changed")
+        res.send(modifiedUser)
 
     } catch (err){
+        if (err.name == "ZodError"){
+            res.status(400).json({error: "Invalid login request body", detail: err.message})
+        }
         res.status(400).json({error: err.message})
+
     }
 
 
-
-
-
-}).delete("/{:id}", requireAuth, async (req, res) => { // Poista käyttäjä
+// Poistetaan tietty käyttäjä id:n perusteella
+}).delete("/{:id}", requireAuth, async (req, res) => {
     try{
         const deletedUser = await userService.DeleteUser(req.params.id, req.user)
 

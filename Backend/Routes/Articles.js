@@ -2,7 +2,6 @@
 import {Router} from "express"
 import { ArticleService } from "../Service/ArticleService.js"
 import { requireAuth } from "../middleware/auth.js"
-import z from "zod"
 import { CreateArticleSchema } from "../Models/ArticleSchemas.js"
 
 const articleService = new ArticleService()
@@ -15,28 +14,29 @@ articles.use((req, res, next) => {
     next()
 })
 
-// Hae kaikki artikkelit
-articles.get("/", async (req, res) => { // Hae kaikki artikkelit
+// Haetaan kaikki artikkelit
+articles.get("/", async (req, res) => {
     try{
         
         const articles = await articleService.GetArticles()
         res.send(articles)
-        console.log("Artikkelit")
 
     } catch (err){
-        res.status(404).json({error: "Articles not found"})
+        res.status(404).json({error: "Something went wrong"})
     }
 
-}).get("/{:id}", async (req, res) => { // Hae yhden artikkelin tiedot
+// Haetaan tietty artikkeli id:n perusteella
+}).get("/{:id}", async (req, res) => {
     try{
         const article = await articleService.GetArticleById(req.params.id)
         res.send(article)
 
     } catch (err){
-        res.send(404).json({error: "Article not found"})
+        res.send(404).json({error: "Something went wrong"})
     }
-    
-}).post("/", requireAuth, async (req, res) => { // Luo artikkelit
+
+// Luodaan uusi artikkeli
+}).post("/", requireAuth, async (req, res) => {
     try{
         const createArticleReq = CreateArticleSchema.parse(req.body)
         const createdArticle = await articleService.CreateArticle(createArticleReq, req.user)
@@ -55,17 +55,17 @@ articles.get("/", async (req, res) => { // Hae kaikki artikkelit
     }
 
 
-
-}).put("/{:id}", requireAuth, async (req, res) => { // Artikkelin muokkaus
+// Muokataan artikkelia
+}).put("/{:id}", requireAuth, async (req, res) => {
     res.send("Muokkaa artikkelia")
 
 
-
-}).patch("/{:id}", requireAuth, async (req, res) => { // Artikkelin muokkaus
+// Muokataan artikkelia
+}).patch("/{:id}", requireAuth, async (req, res) => {
     
     res.send("Muokkaa artikkelia")
 
-
+// Poistetaan artikkeli id:n perustella
 }).delete("/{:id}", requireAuth, async (req, res) => {
     
     res.send({

@@ -1,49 +1,65 @@
-import { dbQuery } from "../db/db.js"
+// Tuodaan data access layer
+import { supabase } from "../db/db.js"
 
+// Artikkelien Service luokka
 export class ArticleService{
 
-    async GetArticles(){ // Hae kaikki artikkelit
-        const query = "SELECT * FROM articles"
-        const articles = await dbQuery(query)
+    // Haetaan kaikki artikkelit
+    async GetArticles(){
+        // Query tietokantaan
+        const articles = await supabase.from('articles').select('*')
 
-        console.log(articles)
-
-        if (articles.rowCount == 0){
-            throw new Error("Articles not found")
+        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan artikkelit
+        if (articles.status === 200 && articles.data.length !== 0) {
+            return articles.data
         }
-
-        return articles.rows
+        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+        else if (articles.status === 200 && articles.data.length === 0) {
+            return("Articles not found")
+        }
+        // Muissa tapauksissa palautetaan virheviesti
+        else {
+            return("Something went wrong")
+        }
     }
 
+    // Haetaan tietty artikkeli id:n perusteella
     async GetArticleById(id){
-        const queryParams = [id]
-        const query = "SELECT * FROM articles WHERE id = $1"
+        // Query tietokantaan
+        const article = await supabase.from('articles').select('*').eq('id', [id])
 
-        const article = await dbQuery(query, queryParams)
-
-        if (article.rowCount == 0){
-            throw new Error("Article not found")
+        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan artikkeli
+        if (article.status === 200 && article.data.length !== 0) {
+            return article.data
         }
-
-        return article.rows
+        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+        else if (article.status === 200 && article.data.length === 0) {
+            return("Article not found")
+        }
+        // Muissa tapauksissa palautetaan virheviesti
+        else {
+            return("Something went wrong")
+        }
     }
 
+    // Luodaan uusi artikkeli
     async CreateArticle(createArticleReq, reqUser){
-
-        // Hae käyttäjän id
-        const {userId} = reqUser
-        const now = new Date()
-        const insertParams = [createArticleReq.title, createArticleReq.content, now, now, userId]
-        const query = "INSERT INTO articles (title, content, created, updated, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *"
-
+        // Yritetään lisätä uusi artikkeli
         try{
-            const insertedArticle = await dbQuery(query, insertParams)
+            // Query tietokantaan
+            const insertedArticle = await supabase.from('articles').insert({
+                title: createArticleReq.title,
+                content: createArticleReq.content,
+                user_id: reqUser
+            })
 
-        } catch (err){
+            // Palautetaan lisäyksen status
+            return (insertedArticle.status + ' ' + insertedArticle.statusText)
+
+        } 
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
             throw new Error(err.message)
         }
-
-        return insertedArticle.rows
-
     }
 }
