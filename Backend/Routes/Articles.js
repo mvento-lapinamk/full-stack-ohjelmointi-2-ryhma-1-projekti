@@ -43,13 +43,13 @@ articles.post("/", requireAuth, async (req, res) => {
 
     } catch (err){
         if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid body to create article", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        else{
+        else {
             res.status(500).json({error: err.message})
-
         }
-
     }
 })
 
@@ -63,10 +63,13 @@ articles.patch("/{:id}", requireAuth, async (req, res) => {
 
     } catch (err){
         if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid request body", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        res.status(500).json({error: err.message})
-
+        else {
+            res.status(500).json({error: err.message})
+        }
     }
 })
 

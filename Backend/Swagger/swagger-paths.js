@@ -600,6 +600,26 @@
  *       responses:
  *         204:
  *           description: A successful response
+ *         500:
+ *           description: Internal Server Error
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *         400:
+ *           description: Bad Request
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *                   detail:
+ *                     type: string
  *   
  *   /users/username/{id}:
  *     patch:
@@ -627,6 +647,26 @@
  *       responses:
  *         204:
  *           description: A successful response
+ *         500:
+ *           description: Internal Server Error
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *         400:
+ *           description: Bad Request
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *                   detail:
+ *                     type: string
  *   
  *   /users/password/{id}:
  *     patch:
@@ -654,4 +694,24 @@
  *       responses:
  *         204:
  *           description: A successful response
+ *         500:
+ *           description: Internal Server Error
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *         400:
+ *           description: Bad Request
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *                   detail:
+ *                     type: string
  */

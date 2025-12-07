@@ -49,10 +49,13 @@ users.post("/login", async (req, res) => {
         
     } catch (err) {
         if (err.name == "ZodError"){
-            console.log(err)
-            res.status(400).json({error: "Invalid login request body", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        res.status(500).json({error: err.message})
+        else {
+            res.status(500).json({error: err.message})
+        }
     }
 })
 
@@ -96,9 +99,13 @@ users.post("/register", async (req, res) => {
         res.status(204).json()
     } catch (err){
         if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid login request body", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        res.status(500).json({error: err.message})
+        else {
+            res.status(500).json({error: err.message})
+        }
     }
 })
 
@@ -112,9 +119,13 @@ users.patch("/username/{:id}", requireAuth, async (req, res) => {
 
     } catch (err){
         if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid login request body", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        res.status(500).json({error: err.message})
+        else {
+            res.status(500).json({error: err.message})
+        }
 
     }
 })
@@ -129,9 +140,13 @@ users.patch("/password/{:id}", requireAuth, async (req, res) => {
 
     } catch (err){
         if (err.name == "ZodError"){
-            res.status(400).json({error: "Invalid login request body", detail: err.message})
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
         }
-        res.status(500).json({error: err.message})
+        else {
+            res.status(500).json({error: err.message})
+        }
 
     }
 })
