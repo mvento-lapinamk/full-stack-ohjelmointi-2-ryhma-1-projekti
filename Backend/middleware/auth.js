@@ -14,10 +14,6 @@ export async function requireAuth(req, res, next){
     
     // Tarkistus, että käyttäjä löytyy
     const user = await userService.UserById(userFromToken.userId)
-    
-    if (user.rowCount == 0){
-        return res.status(401).json({message: "Not Found"})
-    }
 
     // Käyttäjä ei sama
     if (user.username != userFromToken.username){
@@ -39,15 +35,11 @@ export async function requireAdmin(req, res, next){
     }
 
     const userFromToken = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(userFromToken.username)
     
     // Tarkistus, että käyttäjä löytyy
     const user = await userService.UserByUsername(userFromToken)
     
-    if (user.rowCount == 0){
-        return res.status(401).json({message: "Not Found"})
-    }
-    if (user.rows.at(0).role != "admin"){
+    if (user[0].role != "admin"){
         return res.status(401).json({message: "Not authorized"})
     }
     

@@ -2,7 +2,7 @@ import express, { json, Router } from "express"
 import {configDotenv} from "dotenv"
 import "dotenv/config";
 import cors from "cors"
-import {specs, ui} from "./swagger.js"
+import {specs, ui} from "./Swagger/swagger.js"
 import users from "./Routes/Users.js"
 import articles from "./Routes/Articles.js"
 import comments from "./Routes/Comments.js"

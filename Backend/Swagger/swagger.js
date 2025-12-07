@@ -10,7 +10,7 @@ const options = {
             description: "Backend REST API documentation"
         }
     },
-    apis: ['./Routes/*.js'] // files with API annotations
+    apis: ['./Swagger/swagger-paths.js'] // files with API annotations
 }
 
 export const specs = swaggerJsdoc(options)

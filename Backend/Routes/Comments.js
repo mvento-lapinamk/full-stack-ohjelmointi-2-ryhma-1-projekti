@@ -1,109 +1,3 @@
-/**
- * @swagger
- * paths:
- *   /comments:
- *     get:
- *       tags: [
- *         Comments
- *        ]
- *       summary: Returns all comments
- *       responses:
- *         200:
- *           description: A successful response
- *           content: 
- *             application/json:
- *               schema:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     created:
- *                       type: string
- *                       format: date-time
- *                     content:
- *                       type: string
- *                     article_id:
- *                       type: string
- *                     user_id:
- *                       type: integer
- * 
- *     post:
- *       tags: [
- *         Comments
- *        ]
- *       summary: Creates new comment
- *       description: "Requires user to be authenticated: User ID who creates the comment will be saved to database."
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 content:
- *                   type: string
- *                 article_id:
- *                   type: integer
- *       responses:
- *         204:
- *           description: A successful response
- * 
- *   /comments/{article_id}:
- *     get:
- *       tags: [
- *         Comments
- *        ]
- *       summary: Returns comments by article id
- *       parameters:
- *         - name: article_id
- *           in: path
- *           description: Article ID
- *           required: true
- *           schema:
- *             type: integer
- *             format: int64
- *       responses:
- *         200:
- *           description: A successful response
- *           content: 
- *             application/json:
- *               schema:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     created:
- *                       type: string
- *                       format: date-time
- *                     content:
- *                       type: string
- *                     article_id:
- *                       type: string
- *                     user_id:
- *                       type: integer
- * 
- *   /comments/{id}:
- *     delete:
- *       tags: [
- *         Comments
- *        ]
- *       summary: Deletes comment by id
- *       parameters:
- *         - name: id
- *           in: path
- *           description: Comment ID
- *           required: true
- *           schema:
- *             type: integer
- *             format: int64
- *       responses:
- *         204:
- *           description: A successful response
- *  */
 import {Router} from "express"
 import { CommentService } from "../Service/CommentService.js"
 import { requireAuth } from "../middleware/auth.js"
@@ -124,7 +18,7 @@ comments.get("/", async (req, res) => {
         res.send(comments)
 
     } catch (err){
-        res.status(500).json({error: "Something went wrong"})
+        res.status(500).json({error: err.message})
     }
 })
 
@@ -135,7 +29,7 @@ comments.get("/{:id}", async (req, res) => {
         res.send(comments)
 
     } catch (err){
-        res.send(500).json({error: "Something went wrong"})
+        res.status(500).json({error: err.message})
     }
 })
 

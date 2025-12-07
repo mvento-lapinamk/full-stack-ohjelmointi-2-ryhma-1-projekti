@@ -7,100 +7,124 @@ export class UserService{
 
     // Haetaan kaikki käyttäjät
     async Users(){
-        // Query tietokantaan
-        const users = await supabase.from('users').select('*')
+        // Yritetään hakea käyttäjät
+        try{
+            // Query tietokantaan
+            const users = await supabase.from('users').select('*')
 
-        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjät
-        if (users.status === 200 && users.data.length !== 0) {
-            return users.data
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjät
+            if (users.status === 200 && users.data.length !== 0) {
+                return users.data
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (users.status === 200 && users.data.length === 0) {
+                throw new Error("Users not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
+            }
+        } 
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
-        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-        else if (users.status === 200 && users.data.length === 0) {
-            return("Users not found")
-        }
-        // Muissa tapauksissa palautetaan virheviesti
-        else {
-            return("Something went wrong")
-        }
-    
     }
 
     // Haetaan tietty käyttäjä id:n perusteella
     async UserById(id){
-        // Query tietokantaan
-        const user = await supabase.from('users').select('*').eq('id', [id])
+        // Yritetään hakea käyttäjä
+        try{
+            // Query tietokantaan
+            const user = await supabase.from('users').select('*').eq('id', [id])
 
-        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjä
-        if (user.status === 200 && user.data.length !== 0) {
-            return user.data[0]
-        }
-        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-        else if (user.status === 200 && user.data.length === 0) {
-            return("User not found")
-        }
-        // Muissa tapauksissa palautetaan virheviesti
-        else {
-            return("Something went wrong")
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjä
+            if (user.status === 200 && user.data.length !== 0) {
+                return user.data[0]
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (user.status === 200 && user.data.length === 0) {
+                throw new Error("User not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
+            }
+        } 
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
     }
 
     // Haetaan tietty käyttäjä usernamen perusteella
     async UserByUsername(loginReq){
-        // Query tietokantaan
-        const user = await supabase.from('users').select('*').eq('username', [loginReq.username])
+        // Yritetään hakea käyttäjä
+        try{
+            // Query tietokantaan
+            const user = await supabase.from('users').select('*').eq('username', [loginReq.username])
 
-        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjä
-        if (user.status === 200 && user.data.length !== 0) {
-            return user.data
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjä
+            if (user.status === 200 && user.data.length !== 0) {
+                return user.data
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (user.status === 200 && user.data.length === 0) {
+                throw new Error("User not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
+            }
+        } 
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
-        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-        else if (user.status === 200 && user.data.length === 0) {
-            return("User not found")
-        }
-        // Muissa tapauksissa palautetaan virheviesti
-        else {
-            return("Something went wrong")
-        }
-        
     }
     
     // Sisäänkirjautuminen
     async Login(loginReq) {
-        
-        // Tarkistetaan löytyykö usernamea kannasta
-        const user = await this.UserByUsername(loginReq)
+        // Yritetään kirjautua sisään
+        try{
+            // Tarkistetaan löytyykö usernamea kannasta
+            const user = await this.UserByUsername(loginReq)
 
-        // Jos usernamea ei löydy, palautetaan virheviesti
-        if (user === "User not found" || user === "Something went wrong"){
-            throw new Error(user)
+            // Jos usernamea ei löydy, palautetaan virheviesti
+            if (user === "User not found" || user === "Something went wrong"){
+                throw new Error(user)
+            }
+
+            // Jos username löytyi, tallennetaan usernamen salasana hash kannasta muuttujaan
+            const password = user[0].password
+
+            // Tarkistetaan täsmääkö pyynnössä annettu salasana kannan hashiin
+            const correctPsw = await bcrypt.compare(loginReq.password, password)
+            if (!correctPsw){
+                // Jos salasana ei täsmää, palautetaan virheviesti
+                throw new Error("Password not correct")
+            }
+            
+            // Tallennetaan user array muuttujaan
+            const userData = user[0]
+            
+            // Luodaan JSON Web Token payload user datasta
+            const JWT_payload = {
+                userId: userData.id,
+                username: userData.username,
+                role: userData.role
+            }
+
+            // Generoidaan uusi JSON Web Token
+            const token = jwt.sign(JWT_payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || "7d"})
+
+            // Palautetaan token evästeenä
+            return {token, userData}
+        } 
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
-
-        // Jos username löytyi, tallennetaan usernamen salasana hash kannasta muuttujaan
-        const password = user[0].password
-
-        // Tarkistetaan täsmääkö pyynnössä annettu salasana kannan hashiin
-        const correctPsw = await bcrypt.compare(loginReq.password, password)
-        if (!correctPsw){
-            // Jos salasana ei täsmää, palautetaan virheviesti
-            throw new Error("Password not correct")
-        }
-        
-        // Tallennetaan user array muuttujaan
-        const userData = user[0]
-        
-        // Luodaan JSON Web Token payload user datasta
-        const JWT_payload = {
-            userId: userData.id,
-            username: userData.username,
-            role: userData.role
-        }
-
-        // Generoidaan uusi JSON Web Token
-        const token = jwt.sign(JWT_payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || "7d"})
-
-        // Palautetaan token evästeenä
-        return {token, userData}
-        
     }
 
     // Luodaan uusi käyttäjä
@@ -122,15 +146,15 @@ export class UserService{
             // Username on tietokannassa uniikki
             // Jos queryssa tapahtuu konflikti, palautetaan viesti että username on varattu
             if (insertedUser.status === 409 && insertedUser.error.code === '23505') {
-                return("User already exists")
+                throw new Error("User already exists")
             }
-            // Jos query palauttaa 201 Created, palautetaan viesti lisäys onnistui
+            // Jos query palauttaa 201 Created, palataan
             else if (insertedUser.status === 201) {
-                return("User created")
+                return
             }
             // Muissa tapauksissa palautetaan virheviesti
             else {
-                return("Something went wrong")
+                throw new Error("Something went wrong")
             }
         }
         // Jos jokin menee pieleen, palautetaan virheviesti
@@ -149,15 +173,15 @@ export class UserService{
             // Username on tietokannassa uniikki
             // Jos queryssa tapahtuu konflikti, palautetaan viesti että username on varattu
             if (modifiedUser.status === 409 && modifiedUser.error.code === '23505') {
-                return("Username already exists")
+                throw new Error("Username already exists")
             }
-            // Jos query palauttaa 204 No Content, palautetaan viesti muutos onnistui
+            // Jos query palauttaa 204 No Content, palataan
             else if (modifiedUser.status === 204) {
-                return("User with id " + id + " username changed to " + username)
+                return
             }
             // Muissa tapauksissa palautetaan virheviesti
             else {
-                return("Something went wrong")
+                throw new Error("Something went wrong")
             }
         }
         // Jos jokin menee pieleen, palautetaan virheviesti
@@ -168,64 +192,69 @@ export class UserService{
 
     // Käyttäjän salasanan muuttaminen
     async ChangePassword(id, password){
+        // Yritetään muuttaa salasana
+        try{
+            // Query tietokantaan - Tarkistetaan löytyykö päivitettävä id tietokannasta
+            const useridcheck = await supabase.from('users').select('*').eq('id', id)
 
-        // Query tietokantaan - Tarkistetaan löytyykö päivitettävä id tietokannasta
-        const useridcheck = await supabase.from('users').select('*').eq('id', id)
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, muutetaan salasana
+            if (useridcheck.status === 200 && useridcheck.data.length !== 0) {
+                // hash password
+                const passwordHash = await bcrypt.hash(password, 10)
+                //const insertParams = [passwordHash, reqUser.userId]
 
-        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, muutetaan salasana
-        if (useridcheck.status === 200 && useridcheck.data.length !== 0) {
-            // hash password
-            const passwordHash = await bcrypt.hash(password, 10)
-            //const insertParams = [passwordHash, reqUser.userId]
+                // Query tietokantaan
+                const modifiedUser = await supabase.from('users').update({ password: passwordHash }).eq('id', id)
 
-            // Query tietokantaan
-            const modifiedUser = await supabase.from('users').update({ password: passwordHash }).eq('id', id)
-
-            // Jos query palauttaa 204 No Content, palautetaan viesti muutos onnistui
-            if (modifiedUser.status === 204) {
-                return("User with id " + id + " password changed")
+                // Jos query palauttaa 204 No Content, palataan
+                if (modifiedUser.status === 204) {
+                    return
+                }
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (useridcheck.status === 200 && useridcheck.data.length === 0) {
+                throw new Error("User not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
             }
         }
-        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-        else if (useridcheck.status === 200 && useridcheck.data.length === 0) {
-            return("User not found")
-        }
-        // Muissa tapauksissa palautetaan virheviesti
-        else {
-            return("Something went wrong")
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
     }
 
     // Poistetaan tietty käyttäjä id:n perusteella
     async DeleteUser(id, user){
+        // Yritetään poistaa käyttäjä
+        try{
+            // Query tietokantaan - Tarkistetaan löytyykö poistettava id tietokannasta
+            const useridcheck = await supabase.from('users').select('*').eq('id', [id])
 
-        // Query tietokantaan - Autorisointi - Tarkistetaan rooli
-        const loggedinuser = await supabase.from('users').select('*').eq('id', user.userId)
-
-        // Jos sisäänkirjautunut käyttäjä ei ole admin, evätään poistopyyntö
-        if (loggedinuser.data[0].role != "admin"){
-            throw new Error("Unauthorized to delete user")
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, poistetaan käyttäjä
+            if (useridcheck.status === 200 && useridcheck.data.length !== 0) {
+                // Query tietokantaan - Käyttäjän poisto
+                const deletedUser = await supabase.from('users').delete('*').eq('id', [id])
+                // Jos query palauttaa 204 No Content, palataan
+                if (deletedUser.status === 204) {
+                    return
+                }
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (useridcheck.status === 200 && useridcheck.data.length === 0) {
+                throw new Error("User not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
+            }
         }
-
-        // Query tietokantaan - Tarkistetaan löytyykö poistettava id tietokannasta
-        const useridcheck = await supabase.from('users').select('*').eq('id', [id])
-
-        // Jos kantahaku on 200 OK ja data array ei ole tyhjä, poistetaan käyttäjä
-        if (useridcheck.status === 200 && useridcheck.data.length !== 0) {
-            // Query tietokantaan - Käyttäjän poisto
-            const deletedUser = await supabase.from('users').delete('*').eq('id', [id])
-            return("User with id " + [id] + " deleted")
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
         }
-        // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-        else if (useridcheck.status === 200 && useridcheck.data.length === 0) {
-            return("User not found")
-        }
-        // Muissa tapauksissa palautetaan virheviesti
-        else {
-            return("Something went wrong")
-        }
-
-        return
     }
 }
 

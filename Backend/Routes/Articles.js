@@ -1,140 +1,3 @@
-/**
- * @swagger
- * paths:
- *   /articles:
- *     get:
- *       tags: [
- *         Articles
- *        ]
- *       summary: Returns all articles
- *       responses:
- *         200:
- *           description: A successful response
- *           content: 
- *             application/json:
- *               schema:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     title:
- *                       type: string
- *                     content:
- *                       type: string
- *                     created:
- *                       type: string
- *                       format: date-time
- *                     updated:
- *                       type: string
- *                       format: date-time
- *                     user_id:
- *                       type: integer
- *               
- *     post:
- *       tags: [
- *         Articles
- *        ]
- *       summary: Creates new article
- *       description: "Requires user to be authenticated: User ID who creates the article will be saved to database."
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 title:
- *                   type: string
- *                 content:
- *                   type: string
- *       responses:
- *         204:
- *           description: A successful response
- *
- *   /articles/{id}:
- *     get:
- *       tags: [
- *         Articles
- *        ]
- *       summary: Returns article by id
- *       parameters:
- *         - name: id
- *           in: path
- *           description: Article ID
- *           required: true
- *           schema:
- *             type: integer
- *             format: int64
- *       responses:
- *         200:
- *           description: A successful response
- *           content: 
- *             application/json:
- *               schema:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   title:
- *                     type: string
- *                   content:
- *                     type: string
- *                   created:
- *                     type: string
- *                     format: date-time
- *                   updated:
- *                     type: string
- *                     format: date-time
- *                   user_id:
- *                     type: integer
- * 
- *     patch:
- *       tags: [
- *         Articles
- *        ]
- *       summary: Modifies article by id
- *       parameters:
- *         - name: id
- *           in: path
- *           description: Article ID
- *           required: true
- *           schema:
- *             type: integer
- *             format: int64
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 title:
- *                   type: string
- *                 content:
- *                   type: string
- *       responses:
- *         204:
- *           description: A successful response
- * 
- *     delete:
- *       tags: [
- *         Articles
- *        ]
- *       summary: Deletes article by id
- *       parameters:
- *         - name: id
- *           in: path
- *           description: Article ID
- *           required: true
- *           schema:
- *             type: integer
- *             format: int64
- *       responses:
- *         204:
- *           description: A successful response
- */
 import {Router} from "express"
 import { ArticleService } from "../Service/ArticleService.js"
 import { requireAuth } from "../middleware/auth.js"
@@ -155,7 +18,7 @@ articles.get("/", async (req, res) => {
         res.send(articles)
 
     } catch (err){
-        res.status(500).json({error: "Something went wrong"})
+        res.status(500).json({error: err.message})
     }
 })
 
@@ -166,7 +29,7 @@ articles.get("/{:id}", async (req, res) => {
         res.send(article)
 
     } catch (err){
-        res.send(500).json({error: "Something went wrong"})
+        res.status(500).json({error: err.message})
     }
 })
 

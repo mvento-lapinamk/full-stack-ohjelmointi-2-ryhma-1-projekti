@@ -1,230 +1,3 @@
-/**
- * @swagger
- * /users:
- *   get:
- *     tags: [
- *       Users
- *      ]
- *     summary: Returns all users
- *     responses:
- *       200:
- *         description: A successful response
- *         content: 
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   first_name:
- *                     type: string
- *                   last_name:
- *                     type: string
- *                   username:
- *                     type: string
- *                   password:
- *                     type: string
- *                   created:
- *                     type: string
- *                     format: date-time
- *                   role:
- *                     type: string
- * 
- * /users/login:
- *   post:
- *     tags: [
- *       Users
- *      ]
- *     summary: Login for user authentication
- *     description: "Sets token cookie to client. Minimum length for username and password: 8 characters"
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: A successful response
- *         content: 
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     first_name:
- *                       type: string
- *                     last_name:
- *                       type: string
- *                     username:
- *                       type: string
- *                     password:
- *                       type: string
- *                     created:
- *                       type: string
- *                       format: date-time
- *                     role:
- *                       type: string
- * 
- * /users/logout:
- *   get:
- *     tags: [
- *       Users
- *      ]
- *     summary: Logout for user authentication
- *     description: "Removes token cookie from client"
- *     responses:
- *       204:
- *         description: A successful response
- * 
- * /users/{id}:
- *   get:
- *     tags: [
- *       Users
- *      ]
- *     summary: Returns user by id
- *     parameters:
- *       - name: id
- *         in: path
- *         description: User ID
- *         required: true
- *         schema:
- *           type: integer
- *           format: int64
- *     responses:
- *       200:
- *         description: A successful response
- *         content: 
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 first_name:
- *                   type: string
- *                 last_name:
- *                   type: string
- *                 username:
- *                   type: string
- *                 password:
- *                   type: string
- *                 created:
- *                   type: string
- *                   format: date-time
- *                 role:
- *                   type: string
- * 
- *   delete:
- *     tags: [
- *       Users
- *      ]
- *     summary: Deletes user by id
- *     parameters:
- *       - name: id
- *         in: path
- *         description: User ID
- *         required: true
- *         schema:
- *           type: integer
- *           format: int64
- *     responses:
- *       204:
- *         description: A successful response
- * 
- * /users/register:
- *   post:
- *     tags: [
- *       Users
- *      ]
- *     summary: Creates new user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               first_name:
- *                 type: string
- *               last_name:
- *                 type: string
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       204:
- *         description: A successful response
- * 
- * /users/username/{id}:
- *   patch:
- *     tags: [
- *       Users
- *      ]
- *     summary: Changes username by id
- *     parameters:
- *       - name: id
- *         in: path
- *         description: User ID
- *         required: true
- *         schema:
- *           type: integer
- *           format: int64
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *     responses:
- *       204:
- *         description: A successful response
- * 
- * /users/password/{id}:
- *   patch:
- *     tags: [
- *       Users
- *      ]
- *     summary: Changes password by id
- *     parameters:
- *       - name: id
- *         in: path
- *         description: User ID
- *         required: true
- *         schema:
- *           type: integer
- *           format: int64
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               password:
- *                 type: string
- *     responses:
- *       204:
- *         description: A successful response
- * 
- */
 import {Router} from "express"
 import { UserService } from "../Service/UserService.js"
 import { ChangePswSchema, CreateUserSchema, LoginUserSchema, ModifyUserSchema } from "../Models/UserSchemas.js"
@@ -241,10 +14,20 @@ users.use((req, res, next) => {
 users.get("/", async (req, res) => {
     try{
         const users = await userService.Users()
-        res.send(users)
+        // Tehdään käyttäjistä array jossa salasana hash jätetty pois
+        const modifiedUsersArray= users.map(user => {
+            return {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                username: user.username,
+                created: user.created,
+                role: user.role
+            }})
+        res.send(modifiedUsersArray)
 
     } catch (err){
-        res.status(500).json({error: "Something went wrong"})
+        res.status(500).json({error: err.message})
     }
 })
 
@@ -262,7 +45,7 @@ users.post("/login", async (req, res) => {
             maxAge: 1000 * 60 * 60 * 24 * 7 // 7days
         })
 
-        res.send({message: "Logged in", user: userData})
+        res.send({message: "Logged in", id: userData.id})
         
     } catch (err) {
         if (err.name == "ZodError"){
@@ -280,7 +63,7 @@ users.get("/logout", requireAuth, async (req, res) => {
         res.status(204).json()
 
     } catch(err){
-        res.status(500).json({message: "Logout error"})
+        res.status(500).json({error: err.message})
     }
 })
 
@@ -288,10 +71,19 @@ users.get("/logout", requireAuth, async (req, res) => {
 users.get("/{:id}", async (req, res) => {
     try {
         const user = await userService.UserById(req.params.id)
-        res.send(user)
+        // Tehdään käyttäjästä object jossa salasana hash jätetty pois
+        res.send({
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username: user.username,
+            created: user.created,
+            role: user.role
+        })
+        res.send(modifiedUserArray)
 
     } catch (err){
-        res.send(500).json({error: "Something went wrong"})
+        rres.status(500).json({error: err.message})
     }
 })
 
@@ -345,7 +137,7 @@ users.patch("/password/{:id}", requireAuth, async (req, res) => {
 })
 
 // Poistetaan tietty käyttäjä id:n perusteella
-users.delete("/{:id}", requireAuth, async (req, res) => {
+users.delete("/{:id}", requireAdmin, async (req, res) => {
     try{
         const deletedUser = await userService.DeleteUser(req.params.id, req.user)
 
