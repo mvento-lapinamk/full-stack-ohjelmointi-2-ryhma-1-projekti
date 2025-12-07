@@ -32,7 +32,7 @@ export class UserService{
 
         // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan käyttäjä
         if (user.status === 200 && user.data.length !== 0) {
-            return user.data
+            return user.data[0]
         }
         // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
         else if (user.status === 200 && user.data.length === 0) {

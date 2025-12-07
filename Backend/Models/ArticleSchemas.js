@@ -7,3 +7,7 @@ export const CreateArticleSchema = z.object({
     content: z.string().min(1)
 })
 
+export const ModifyArticleSchema = z.object({
+    title: z.string().min(1),
+    content: z.string().min(1)
+})
