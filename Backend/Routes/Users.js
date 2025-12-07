@@ -42,7 +42,7 @@ users.post("/login", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
-            maxAge: 1000 * 60 * 60 * 24 * 7 // 7days
+            maxAge: 1000 * 60 * 60 * 24 * process.env.JWT_TOKEN_COOKIE_EXPIRES_IN_DAYS
         })
 
         res.send({message: "Logged in", id: userData.id})

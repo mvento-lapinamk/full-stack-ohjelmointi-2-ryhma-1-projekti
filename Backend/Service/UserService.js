@@ -116,7 +116,7 @@ export class UserService{
             }
 
             // Generoidaan uusi JSON Web Token
-            const token = jwt.sign(JWT_payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || "7d"})
+            const token = jwt.sign(JWT_payload, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN})
 
             // Palautetaan token evästeenä
             return {token, userData}
