@@ -1,4 +1,4 @@
-import { Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 
 
 export function Register(){
@@ -10,24 +10,30 @@ export function Register(){
             <Form action="/signup" method="post" className="flex flex-col items-center">
                 <input type="text" name="first_name" placeholder="Etunimi"/>
                 <input type="text" name="last_name" placeholder="Sukunimi"/>
-                <input type="text" name="username" placeholder="Käyttäjä nimi"/>
+                <input type="text" name="username" placeholder="Käyttäjänimi"/>
                 <input type="password" name="password" placeholder="Salasana"/>
-                <button type="submit">Rekisteröidy</button>
+                <button type="submit" className="btn">Rekisteröidy</button>
             </Form>
         </div>
     )
 }
 
 export async function RegisterAction({request}){
+
+    console.log("Register action")
+
     const formData = await request.formData();
-    const {username, password} = Object.fromEntries(formData)
-    console.log(username, password)    
-    /*
-    const res = await fetch("localhost:3000/api/user/register", {
+    const data = Object.fromEntries(formData)
+    
+    const res = await fetch("http://localhost:3000/users/register", {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify(username, password)
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(data)
+    }).then(data => {
+        console.log(data)
     })
 
-    console.log(res.body)*/
 }

@@ -9,38 +9,51 @@
   flex-direction: column;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (prefers-color-scheme: light){
+  header {
+    @apply w-full p-5 flex bg-yellow-300
+  }
+
+  footer {
+    @apply w-full flex p-5 bg-yellow-300
+  }
+
+  h1 {
+    @apply text-3xl
+  }
+  .btn {
+    @apply p-2 border-2 rounded-sm bg-gray-300 border-amber-100 text-black cursor-pointer
+  }
+
+  input {
+    @apply p-1 my-2 border-2 rounded-sm  bg-gray-300 border-amber-100 text-black
   }
 }
 
-.card {
-  padding: 2em;
-}
+@media (prefers-color-scheme: dark){
+  header {
+    @apply w-full p-5 flex bg-zinc-800
+  }
 
-.read-the-docs {
-  color: #888;
+  footer {
+    @apply w-full p-5 flex bg-zinc-800
+  }
+
+  h1 {
+    @apply text-3xl
+  }
+
+  .btn {
+    @apply p-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white cursor-pointer
+  }
+
+  input {
+    @apply p-2 my-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white
+  }
+
+  .commentSection{
+    @apply bg-zinc-700
+  }
 }

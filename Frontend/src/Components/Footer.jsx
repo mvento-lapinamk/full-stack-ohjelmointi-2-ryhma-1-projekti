@@ -3,12 +3,9 @@
 function Footer(){
 
     return <>
-        <footer className="flex justify-between bg-red-300 w-screen">
+        <footer>
             <div>
-                Jotain
-            </div>
-            <div>
-                Jotain
+                Footer
             </div>
 
         </footer>
