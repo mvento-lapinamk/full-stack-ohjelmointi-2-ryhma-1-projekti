@@ -10,7 +10,7 @@
 }
 
 
-
+/* Light theme */
 @media (prefers-color-scheme: light){
   header {
     @apply w-full p-5 flex bg-yellow-300
@@ -23,6 +23,11 @@
   h1 {
     @apply text-3xl
   }
+
+  h2 {
+    @apply text-2xl
+  }
+
   .btn {
     @apply p-2 border-2 rounded-sm bg-gray-300 border-amber-100 text-black cursor-pointer
   }
@@ -30,8 +35,26 @@
   input {
     @apply p-1 my-2 border-2 rounded-sm  bg-gray-300 border-amber-100 text-black
   }
+
+  .commentsSection {
+    @apply size-fit px-10 h-30 overflow-auto border-amber-100 border-2
+  }
+
+  .commentCard {
+    @apply flex flex-col flex-1
+  }
+
+  .articleContent{
+    @apply border-2 border-amber-100 bg-gray-300 h-100
+  }
+
+  .error {
+    @apply text-red-400
+  }
 }
 
+
+/* Dark theme */
 @media (prefers-color-scheme: dark){
   header {
     @apply w-full p-5 flex bg-zinc-800
@@ -45,6 +68,10 @@
     @apply text-3xl
   }
 
+  h2 {
+    @apply text-2xl
+  }
+
   .btn {
     @apply p-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white cursor-pointer
   }
@@ -53,7 +80,19 @@
     @apply p-2 my-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white
   }
 
-  .commentSection{
-    @apply bg-zinc-700
+  .commentsSection {
+    @apply size-fit px-5 h-40 overflow-auto border-blue-300 border-2
+  }
+
+  .commentCard {
+    @apply flex flex-col my-5 p-5 border-2 border-zinc-400 bg-zinc-700
+  }
+
+  .articleContent{
+    @apply border-2 border-blue-400 bg-zinc-700 h-100
+  }
+
+  .error {
+    @apply text-red-400
   }
 }

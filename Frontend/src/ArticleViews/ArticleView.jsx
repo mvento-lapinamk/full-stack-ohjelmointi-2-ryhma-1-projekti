@@ -3,42 +3,26 @@ import { Form, useLoaderData, useParams } from "react-router-dom";
 import { CommentCard } from "../Comments/CommentCard";
 
 
-// Ota etusivulta lähetetty state vastaan useLocation avulla
+// Loaderilla haetaan oikea artikkeli
 export function ArticleView(){
     const {article, comments} = useLoaderData()
-    // const [comments, setComments] = useState([])
     const {id} = useParams()
 
 
-    async function getArticle(){
-        const response = await fetch(`http://localhost:3000/articles/${id}`)
-        const data = await response.json()
-        return data
-    }
-    
-    async function getComments(){
-        const response = await fetch(`http://localhost:3000/comments/${id}`)
-        const data = await response.json()
-        return data
-    }
-
-    useEffect(() => {
-    }, [])
-
 
     return (
-        <div className="flex flex-col w-3/5 mx-auto h-100 items-center">
+        <div className="flex flex-col w-3/5 mx-auto flex-1 items-center">
             <div className="flex-1">
-            {article ? (
-                <><h3 className="my-3 text-3xl">{article.title}</h3>
-                <p>{article.content}</p></>
+                {article ? (
+                    <><h3 className="my-3 text-3xl">{article.title}</h3>
+                    <p>{article.content}</p></>
 
-            ) : (
-                <><h3 className="my-3 text-3xl">Not found</h3>
-                <p>Not found</p></>
-            )}
+                ) : (
+                    <><h3 className="my-3 text-3xl">Not found</h3>
+                    <p>Not found</p></>
+                )}
             </div>
-            <div className="commentSection size-fit px-5">
+            <div className="commentsSection">
                 {comments.map((comment) => {
                     return (<CommentCard key={comment.id} user={comment.user_id} comment={comment.content} created={comment.created} />)
                 })}
@@ -50,6 +34,8 @@ export function ArticleView(){
         </div>
     )
 }
+
+
 // Postaa uusi kommentti
 export async function PostCommentAction({request, params}){
     const articleId = parseInt(params.id)
@@ -82,14 +68,8 @@ export async function PostCommentAction({request, params}){
 export async function ArticleLoader({params}){
     const id = params.id
 
+    // Hae artikkelit id perusteella
     const resArticle = await fetch(`http://localhost:3000/articles/${id}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-            "Content-type": "application/json"
-        }
-    })
-    const resComments = await fetch(`http://localhost:3000/comments/${id}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -100,6 +80,16 @@ export async function ArticleLoader({params}){
     if (!resArticle.ok){
         console.log("Article fetch failed")
     }
+
+    // Hae artikkelin kommentit
+    const resComments = await fetch(`http://localhost:3000/comments/${id}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+
     if (!resComments.ok){
         console.log("Comments fetch failed")
     }

@@ -4,7 +4,9 @@ import { Link, redirect, useLoaderData, useNavigate } from "react-router-dom"
 
 export function Header(){
 
-    let user  = useLoaderData()
+    // Loaderin palauttama tieto
+    const user  = useLoaderData()
+    // Navigointi rekisteröitymis napilla siirtymiseen
     const navigate = useNavigate()
 
     
@@ -13,8 +15,10 @@ export function Header(){
         <header className="w-full p-5 flex bg-zinc-600">
             <img src={logo} alt="logo" />
             <Link to={"/"}>
-                <h1 className="ml-5">Otsikko</h1>
+                <h1 className="mx-5">Otsikko</h1>
             </Link>
+
+            <p className="leading-none">Terve {user.user ? user.user : user.message}</p>
 
             {/* user ? (
 
@@ -23,9 +27,11 @@ export function Header(){
                 
                 <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>
             )*/}
+            <button className="ml-auto btn" onClick={() => navigate("/article/create")}>Luo artikkeli</button>
             <button className="ml-auto btn" onClick={LogoutAction}>Ulos kirjaudu</button>
                 
             <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>
+
    
             
         </header>
@@ -47,9 +53,8 @@ export async function LogoutAction(){
         return
     }
     
-    const response = await res.json()
     
-    console.log(response)
+    // Ohjataan takaisin etusivulle
     return redirect("/")
 }
 
@@ -57,14 +62,18 @@ export async function LogoutAction(){
 export async function HeaderLoader(){
     const res = await fetch("http://localhost:3000/users/me", {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        headers: {
+            "Content-type": "application/json"
+        },
     })
 
+    // Jos tokenin käyttäjää ei löydy
     if (!res.ok){
-        console.log("Res not ok")
-        return {user: null}
+        return {message: "Vierailija"}
     }
 
+    // Palautetaan käyttäjän tiedot
     const user = await res.json()
     return {user: user}
 }
