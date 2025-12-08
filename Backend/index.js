@@ -16,7 +16,10 @@ const app = express()
 app.use('/swagger', ui.serve, ui.setup(specs))
 
 app.use(json())
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}))
 app.use(cookieParser())
 
 // Reititykset

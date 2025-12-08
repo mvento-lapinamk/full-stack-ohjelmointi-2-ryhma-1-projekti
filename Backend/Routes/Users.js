@@ -75,18 +75,18 @@ users.get("/{:id}", async (req, res) => {
     try {
         const user = await userService.UserById(req.params.id)
         // Tehdään käyttäjästä object jossa salasana hash jätetty pois
-        res.send({
+        const modifiedUser = {
             id: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
             username: user.username,
             created: user.created,
             role: user.role
-        })
-        res.send(modifiedUserArray)
+        }
+        res.send(modifiedUser)
 
     } catch (err){
-        rres.status(500).json({error: err.message})
+        res.status(500).json({error: err.message})
     }
 })
 
