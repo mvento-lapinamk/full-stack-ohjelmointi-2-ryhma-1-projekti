@@ -31,6 +31,22 @@ users.get("/", async (req, res) => {
     }
 })
 
+// Tokenin tarkistukseen. Palautetaan tokenin sisältämä user
+users.get("/whoami", requireAuth, async (req, res) => {
+    try{
+        const modifiedUser = {
+            id: req.user.userId,
+            username: req.user.username,
+            role: req.user.role
+        }
+        res.send(modifiedUser)
+    }
+    catch(err){
+        console.log("ME error")
+        res.status(500).json({error: err.message})
+    }
+})
+
 // Sisäänkirjautuminen
 users.post("/login", async (req, res) => {
     try 
@@ -163,5 +179,6 @@ users.delete("/{:id}", requireAdmin, async (req, res) => {
         res.status(500).json({error: err.message})
     }
 })
+
 
 export default users
