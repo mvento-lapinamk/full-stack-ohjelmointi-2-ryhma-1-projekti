@@ -49,7 +49,6 @@ export async function LoginAction({request}){
     })
 
     if (!res.ok){
-        console.log("error")
         return {error: "Login failed"}
     }
     

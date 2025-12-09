@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, useLoaderData, useParams } from "react-router-dom";
 import { CommentCard } from "../Comments/CommentCard";
+import { CommentList } from "../Comments/CommentList";
 
 
 // Loaderilla haetaan oikea artikkeli
@@ -22,11 +23,7 @@ export function ArticleView(){
                     <p>Not found</p></>
                 )}
             </div>
-            <div className="commentsSection">
-                {comments.map((comment) => {
-                    return (<CommentCard key={comment.id} user={comment.user_id} comment={comment.content} created={comment.created} />)
-                })}
-            </div>
+            <CommentList article_id={id}/>
             <Form method="post" action={`/article/${id}`}>
                 <input type="text" name="content" placeholder="Leave comment" className=""/>
                 <button className="btn ml-2">Lähetä kommentti</button>
@@ -69,7 +66,7 @@ export async function ArticleLoader({params}){
     const id = params.id
 
     // Hae artikkelit id perusteella
-    const resArticle = await fetch(`http://localhost:3000/articles/${id}`, {
+    const res = await fetch(`http://localhost:3000/articles/${id}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -77,26 +74,14 @@ export async function ArticleLoader({params}){
         }
     })
 
-    if (!resArticle.ok){
+    if (!res.ok){
         console.log("Article fetch failed")
+        return null
     }
 
-    // Hae artikkelin kommentit
-    const resComments = await fetch(`http://localhost:3000/comments/${id}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-            "Content-type": "application/json"
-        }
-    })
 
-    if (!resComments.ok){
-        console.log("Comments fetch failed")
-    }
+    const article = await res.json()
 
-    const article = await resArticle.json()
-    const comments = await resComments.json()
-
-    return {article, comments}
+    return {article}
 
 }

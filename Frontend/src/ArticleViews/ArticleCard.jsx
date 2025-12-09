@@ -5,15 +5,22 @@ import { useEffect, useState } from "react"
 export function ArticleCard({title, content, created, userId}){
 
     // Id:llä haettavan käyttäjän state
-    const [userData, setUserData] = useState()
+    const [userData, setUserData] = useState({error: "Not found"})
 
     // Haetaan artikkelin kirjoittaja
     async function getUser(id){
-        const res = await fetch(`http://localhost:3000/users/${id}`)
+        const res = await fetch(`http://localhost:3000/users/${id}`, {
+            method: "GET",
+            include: "credentials",
+            headers: {
+                "Content-type": "application/json"
+            },
+        })
 
         // Jos käyttäjää ei löydy palautetaan tyhjä ja näytetään ruudulla "tuntematon"
         if (!res.ok){
-            return
+            const data = await res.json()
+            return data
         }
 
         return await res.json()
@@ -23,7 +30,7 @@ export function ArticleCard({title, content, created, userId}){
         getUser(userId).then(data => {
             setUserData(data)
         })
-
+        
     }, [])
 
     // Formatoidaan aika
@@ -40,7 +47,7 @@ export function ArticleCard({title, content, created, userId}){
         <div>
             <h2>{title}</h2>
             <p className="my-5">{content}</p>
-            <p className="text-start">Kirjoittanut: {userData ? userData.first_name : "Tuntematon"}</p>
+            <p className="text-start">Kirjoittanut: {userData?.first_name && userData?.last_name ? `${userData.first_name} ${userData.last_name}` : userData.error}</p>
             <p className="text-start">{formatDate}</p>
         </div>
     )
