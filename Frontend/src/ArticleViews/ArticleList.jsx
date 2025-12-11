@@ -12,6 +12,10 @@ export function ArticleList(){
     // Funktio artikkeleiden haulle
     async function loadedArticles() {
         const res = await fetch("http://localhost:3000/articles")
+
+        if (!res.ok){
+            return 
+        }
         const data = await res.json()
         return data
 

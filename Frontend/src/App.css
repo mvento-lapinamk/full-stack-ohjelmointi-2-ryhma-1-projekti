@@ -57,7 +57,7 @@
 /* Dark theme */
 @media (prefers-color-scheme: dark){
   header {
-    @apply w-full p-5 flex bg-zinc-800
+    @apply w-full h-20 p-5 flex bg-zinc-800
   }
 
   footer {
@@ -94,5 +94,17 @@
 
   .error {
     @apply text-red-400
+  }
+
+  .slide-menu {
+    @apply fixed -right-1/4 p-1 w-fit h-fit border-2 border-blue-400 bg-zinc-400 text-white transition-all delay-75 duration-150 ease-in
+  }
+
+  .slide-menu.open {
+    @apply right-1
+  }
+
+  .menu-item {
+    @apply p-2 m-2 cursor-pointer border-2 border-zinc-50 bg-zinc-500
   }
 }

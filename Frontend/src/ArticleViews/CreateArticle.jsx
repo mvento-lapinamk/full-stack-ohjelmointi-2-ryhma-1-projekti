@@ -1,4 +1,4 @@
-import { Form, redirect, useActionData } from "react-router-dom";
+import { Form, redirect, useActionData, useLoaderData } from "react-router-dom";
 
 
 export function CreateArticle(){
@@ -49,4 +49,26 @@ export async function CreateArticleAction({ request }){
     }
 
     return redirect("/")
+}
+
+// Uuden artikkelin tallentaminen
+export async function CreateArticleLoader(){
+    const res = await fetch("http://localhost:3000/users/whoami", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+
+    // Virhe tilanteissa palauta viesti takaisin komponentille
+    if (!res.ok){
+        if (res.status == 401){
+            throw new Response("Ei oikeuksia päästä sivulle", {status: res.status})
+        }
+        else {
+            throw new Response("Palvelussamme saattaa olla ongelma", {status: res.status})
+        }
+
+    }
 }

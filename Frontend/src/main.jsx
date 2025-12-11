@@ -7,8 +7,9 @@ import { Login, LoginAction } from './Forms/Login.jsx'
 import { Register, RegisterAction } from './Forms/Signup.jsx'
 import { ArticleList } from './ArticleViews/ArticleList.jsx'
 import { ArticleLoader, ArticleView, PostCommentAction } from './ArticleViews/ArticleView.jsx'
-import { HeaderLoader } from './Components/Header.jsx'
-import { CreateArticle, CreateArticleAction } from './ArticleViews/CreateArticle.jsx'
+import { HeaderLoader, LogoutAction } from './Components/Header.jsx'
+import { CreateArticle, CreateArticleAction, CreateArticleLoader } from './ArticleViews/CreateArticle.jsx'
+import { ErrorPage } from './CustomException/ErrorPage.jsx'
 
 const router = createBrowserRouter([
   {
@@ -18,9 +19,10 @@ const router = createBrowserRouter([
     children: [
       {path: "/", element: <ArticleList />}, // Etusivu
       {path: "/login", element: <Login />, action: LoginAction}, // Kirjaudu
+      {path: "/logout", action: LogoutAction}, // Kirjaudu ulos
       {path: "/signup", element: <Register />, action: RegisterAction}, // Rekisteröidy
       {path: "/article/:id", element: <ArticleView />, loader: ArticleLoader, action: PostCommentAction}, // Yhden artikkelin näkymä
-      {path: "/article/create", element: <CreateArticle />, action: CreateArticleAction} // Luo artikkeli näkymä
+      {path: "/article/create", element: <CreateArticle />, action: CreateArticleAction, loader: CreateArticleLoader, errorElement: <ErrorPage />} // Luo artikkeli näkymä
     ]
   }
 ])

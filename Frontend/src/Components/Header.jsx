@@ -1,38 +1,31 @@
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import logo from "../assets/react.svg"
 import { Link, redirect, useLoaderData, useNavigate } from "react-router-dom"
+import { UserMenu } from "../Menu/UserMenu"
 
 export function Header(){
 
+    // Lue header korkeus menuita varten
+    const [headerHeight, setHeaderHeight] = useState(0)
+    const headerRef = useRef()
+
     // Loaderin palauttama tieto
     const data = useLoaderData()
-    
-    // Navigointi rekisteröitymis napilla siirtymiseen
     const navigate = useNavigate()
+    
+    // Lue headerin korkeus, joka annetaan menulle
+    useEffect(() => {
+        if (headerRef.current){
 
-    // Kirjaudu ulos
-    async function LogoutAction(){
-        const res = await fetch("http://localhost:3000/users/logout", {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-type": "application/json"
-            }
-        })
-        
-        if (!res.ok){
-            console.log("error")
-            return
+            setHeaderHeight(headerRef.current.clientHeight)
         }
-        
-        
-        // Ohjataan takaisin etusivulle, jolloin header päivittyy
-        return navigate("/")
-    }
+
+    }, [headerHeight])
+
     
     return <>
     
-        <header className="w-full p-5 flex bg-zinc-600">
+        <header ref={headerRef} className="w-full p-5 flex bg-zinc-600">
             <img src={logo} alt="logo" />
             <Link to={"/"}>
                 <h1 className="mx-5">Otsikko</h1>
@@ -40,13 +33,8 @@ export function Header(){
 
             <p className="leading-none">Terve {data.user ? data.user.username : data.message}</p>
 
-            {data.user ? (
+            {data.user ? <UserMenu headerHeight={headerHeight} logoutAction={LogoutAction} userRole={data.user.role} /> : <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>}
 
-                <button className="ml-auto btn" onClick={LogoutAction}>Ulos kirjaudu</button>
-            ) : (
-                
-                <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>
-            )}
             
         </header>
     </>
@@ -77,4 +65,25 @@ export async function HeaderLoader(){
     } catch (err){
         console.log(err.message)
     }
+}
+
+    // Kirjaudu ulos
+export async function LogoutAction(){
+    console.log("logout action")
+    const res = await fetch("http://localhost:3000/users/logout", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
+    
+    if (!res.ok){
+        console.log("error")
+        return
+    }
+    
+    
+    // Ohjataan takaisin etusivulle, jolloin header päivittyy
+    return redirect("/")
 }
