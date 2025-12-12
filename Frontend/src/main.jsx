@@ -11,7 +11,7 @@ import { HeaderLoader, LogoutAction } from './Components/Header.jsx'
 import { CreateArticle, CreateArticleAction, CreateArticleLoader } from './ArticleViews/CreateArticle.jsx'
 import { ErrorPage } from './CustomException/ErrorPage.jsx'
 import { UserControl, UserControlLoader } from './Admin/UserControl.jsx'
-import { ProfileView } from './ProfileView/ProfileView.jsx'
+import { ProfileView, ProfileViewAction } from './ProfileView/ProfileView.jsx'
 
 const router = createBrowserRouter([
   {
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
       {path: "/article/:id", element: <ArticleView />, loader: ArticleLoader, action: PostCommentAction}, // Yhden artikkelin näkymä
       {path: "/article/create", element: <CreateArticle />, action: CreateArticleAction, loader: CreateArticleLoader, errorElement: <ErrorPage />}, // Luo artikkeli näkymä
       {path: "/admin/users", element: <UserControl />, loader: UserControlLoader, errorElement: <ErrorPage />}, // Adminin user hallinointi
-      {path: "/my/profile", element: <ProfileView />, errorElement: <ErrorPage />} // Käyttäjän oma profiilin katselu
+      {path: "/my/profile", element: <ProfileView />, action: ProfileViewAction, errorElement: <ErrorPage />} // Käyttäjän oma profiilin katselu
     ]
   }
 ])

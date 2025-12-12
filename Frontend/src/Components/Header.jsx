@@ -60,7 +60,7 @@ export async function HeaderLoader(){
     
         // Palautetaan käyttäjän tiedot
         const user = await res.json()
-        console.log(user)
+        
         return user
 
     } catch (err){
