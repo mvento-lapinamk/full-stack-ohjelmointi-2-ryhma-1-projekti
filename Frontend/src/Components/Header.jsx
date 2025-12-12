@@ -31,9 +31,9 @@ export function Header(){
                 <h1 className="mx-5">Otsikko</h1>
             </Link>
 
-            <p className="leading-none">Terve {data.user ? data.user.username : data.message}</p>
+            <p className="leading-none">Terve {data.username ? data.username : data.message}</p>
 
-            {data.user ? <UserMenu headerHeight={headerHeight} logoutAction={LogoutAction} userRole={data.user.role} /> : <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>}
+            {data.role ? <UserMenu headerHeight={headerHeight} logoutAction={LogoutAction} userRole={data.role} /> : <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>}
 
             
         </header>
@@ -60,7 +60,8 @@ export async function HeaderLoader(){
     
         // Palautetaan käyttäjän tiedot
         const user = await res.json()
-        return {user}
+        console.log(user)
+        return user
 
     } catch (err){
         console.log(err.message)

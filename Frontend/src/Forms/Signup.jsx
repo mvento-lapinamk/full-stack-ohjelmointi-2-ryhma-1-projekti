@@ -51,6 +51,6 @@ export async function RegisterAction({request}){
     }
 
     // Rekisteröitynyt käyttäjä ohjataan kirjautumaan
-    redirect("/login")
+    return redirect("/login")
 
 }

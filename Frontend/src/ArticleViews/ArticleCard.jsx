@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { FormatTime } from "../Components/FormatTime"
 
 
 // Yksittäinen etusivulla näytettävä artikkeli
@@ -34,13 +35,7 @@ export function ArticleCard({title, content, created, userId}){
     }, [])
 
     // Formatoidaan aika
-    const date = new Date(created)
-    const formatDate = date.getDate().toString() + "." + 
-    date.getMonth().toString() + "." + 
-    date.getFullYear().toString() + " " + 
-    date.getHours().toString() + "." + 
-    date.getMinutes().toString() + "." + 
-    date.getSeconds().toString()
+    const formatDate = FormatTime(created)
 
     // Content voisi olla tässä tapauksessa lyhyt selitys, ei koko sisältö
     return(

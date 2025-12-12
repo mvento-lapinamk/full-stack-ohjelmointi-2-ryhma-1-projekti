@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import {FaRegTrashAlt} from "react-icons/fa"
+import { FormatTime } from "../Components/FormatTime"
 
 
 export function CommentCard({comment, webUser, onDelete}){
@@ -8,20 +9,14 @@ export function CommentCard({comment, webUser, onDelete}){
 
     // Tarkista onko käyttäjä sama kuin kommentin jättänyt. 
     // Tällöin näytetään roskis jolla kommentin voi poistaa
-    const sameUser = false
-    if (webUser.user){
-        const sameUser = comment.user_id == webUser?.user.id
-
+    let sameUser = false
+    if (webUser?.id){
+        sameUser = comment.user_id == webUser?.id
+        
     }
 
     // Muutetaan aika kivempaan muotoon
-    const date = new Date(comment.created)
-    const formatDate = date.getDate().toString() + "." + 
-    date.getMonth().toString().padStart(2, "0") + "." + 
-    date.getFullYear().toString().padStart(2, "0") + " " + 
-    date.getHours().toString() + "." + 
-    date.getMinutes().toString().padStart(2, "0") + "." + 
-    date.getSeconds().toString().padStart(2, "0")
+    const formatDate = FormatTime(comment.created)
 
     // Haetaan kommentin kirjoittajan tiedot
     async function getUser(userId){
@@ -34,7 +29,8 @@ export function CommentCard({comment, webUser, onDelete}){
         })
         
         if (!res.ok){
-            return 
+            console.log("Error", res.error)
+            return {error: "User not found"}
         }
 
         return await res.json()
@@ -49,6 +45,7 @@ export function CommentCard({comment, webUser, onDelete}){
             }
         })
 
+        console.log(res)
         if (!res.ok){
             return alert("Kommentin poisto epäonnistui")
         }
@@ -77,3 +74,4 @@ export function CommentCard({comment, webUser, onDelete}){
         </div>
     )
 }
+

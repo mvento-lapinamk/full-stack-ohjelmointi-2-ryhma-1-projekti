@@ -1,32 +1,16 @@
 import { useEffect } from "react"
 import { useState } from "react"
 import { CommentCard } from "./CommentCard"
+import { useRouteLoaderData } from "react-router-dom"
 
 
 
 export function CommentList({article_id}){
+    // Tähän haetaan kaikki kommentit
     const [comments, setComments] = useState([])
-    const [webUser, setWebUser] = useState()
 
-    // Tarkistetaan käyttäjä tokenista
-    async function getMe(){
-        const res = await fetch("http://localhost:3000/users/whoami", {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-type": "application/json"
-            },
-        })
-
-        // Jos tokenin käyttäjää ei löydy
-        if (!res.ok){
-            return {message: "Vierailija"}
-        }
-
-        // Palautetaan käyttäjän tiedot
-        const user = await res.json()
-        return {user}
-    }
+    // Headerin tarkistama käyttäjä
+    const user = useRouteLoaderData("root")
     
     // Haetaan kommentit
     async function getComments(id){
@@ -53,10 +37,6 @@ export function CommentList({article_id}){
     }
 
     useEffect(() => {
-        
-        getMe().then(data => {
-            setWebUser(data)
-        })
 
         getComments(article_id).then(data => {
             setComments(data)
@@ -67,7 +47,7 @@ export function CommentList({article_id}){
     return (
         <div className="commentsSection">
             {comments ? comments.map((comment) => {
-                return (<CommentCard key={comment.id} comment={comment} webUser={webUser} onDelete={updateComments} />)
+                return (<CommentCard key={comment.id} comment={comment} webUser={user} onDelete={updateComments} />)
             }) : <p>Article has no comments</p>}
         </div>
     )
