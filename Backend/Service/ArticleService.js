@@ -9,7 +9,7 @@ export class ArticleService{
         // Yritetään hakea artikkelit
         try{
             // Query tietokantaan
-            const articles = await supabase.from('articles').select('*')
+            const articles = await supabase.from('articles').select('*').order("id", {ascending: false})
 
             // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan artikkelit
             if (articles.status === 200 && articles.data.length !== 0) {
