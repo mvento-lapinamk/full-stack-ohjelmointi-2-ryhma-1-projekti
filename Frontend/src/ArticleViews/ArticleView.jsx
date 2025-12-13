@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Link, redirect, useActionData, useLoaderData, useLocation, useParams, useRouteLoaderData } from "react-router-dom";
+import { Form, Link, redirect, useActionData, useLoaderData, useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 import { CommentList } from "../Comments/CommentList";
 import {FaRegTrashAlt} from "react-icons/fa"
 import { LuPenTool } from "react-icons/lu"
@@ -7,7 +7,9 @@ import { LuPenTool } from "react-icons/lu"
 
 // Loaderilla haetaan oikea artikkeli
 export function ArticleView(){
-    
+    // Artikkelin poiston jälkeen ohjataan etusivulle
+    const navigate = useNavigate()
+
     // Tähän stateen haetaan kirjoittajan tiedot articleUserId.taten avulla
     const [articleUser, setArticleUser] = useState([])
     
@@ -17,7 +19,7 @@ export function ArticleView(){
 
     // Jos käyttäjä kirjoittanut artikkelin. Annetaan mahdollisuus muokata tai poistaa.
     if(user){
-        if (user.id === articleUser.id){
+        if (user.id === articleUser.id || user.role === "admin"){
             sameUser = true
         }
         else{
@@ -33,6 +35,25 @@ export function ArticleView(){
     // Actionstä palautuu kommentoinnin tulos
     const actionData = useActionData()
 
+    // Functio artikkelin poistoon
+    async function DeleteArticle(){
+
+        console.log("Poistetaan artikkeli", id)
+        const res = await fetch(`http://localhost:3000/articles/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if (!res.ok){
+            console.log(res)
+            return alert("Artikkelin poisto epäonnistui")
+        }
+
+        return navigate("/")
+    }
 
     // Hae artikkelin kirjoittanut käyttäjä
     async function getUser(userid){
@@ -65,8 +86,11 @@ export function ArticleView(){
         <div className="flex flex-col w-3/5 mx-auto flex-1 items-center">
             <div className="flex-1 flex flex-col w-full">
                 {article ? (
-                    <><h3 className="my-3 text-3xl">{article.title}</h3>
-                    <p>{article.content}</p></>
+                    <>
+                        <h3 className="my-3 text-3xl">{article.title}</h3>
+                        <p>{article.description}</p>
+                        <p>{article.content}</p>
+                    </>
 
                 ) : (
                     <><h3 className="my-3 text-3xl">Not found</h3>
@@ -78,7 +102,7 @@ export function ArticleView(){
                     <Link to={`/article/${id}/modify`} state={article}>
                         <button className="ml-auto size-fit cursor-pointer"> <i> <LuPenTool /> </i> </button>
                     </Link>
-                        <button className="ml-5 size-fit cursor-pointer"> <i> <FaRegTrashAlt/> </i> </button> </> : <></>}
+                    <button className="ml-5 size-fit cursor-pointer" onClick={DeleteArticle}> <i> <FaRegTrashAlt/> </i> </button> </> : <></>}
                 </div>
             </div>
             <CommentList article_id={id}/>

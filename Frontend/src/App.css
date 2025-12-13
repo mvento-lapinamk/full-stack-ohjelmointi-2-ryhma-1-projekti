@@ -51,6 +51,18 @@
   .error {
     @apply text-red-400
   }
+
+  .slide-menu {
+    @apply fixed -right-1/4 p-1 w-fit h-fit border-2 border-amber-100 bg-gray-300 text-black transition-all delay-75 duration-150 ease-in
+  }
+
+  .slide-menu.open {
+    @apply right-1
+  }
+
+  .menu-item {
+    @apply p-2 m-2 cursor-pointer border-2 border-zinc-50 bg-zinc-500
+  }
 }
 
 
@@ -81,7 +93,7 @@
   }
 
   .commentsSection {
-    @apply size-fit px-5 h-40 overflow-auto border-blue-300 border-2
+    @apply size-fit px-5 w-9/10 h-40 overflow-auto border-blue-300 border-2
   }
 
   .commentCard {
