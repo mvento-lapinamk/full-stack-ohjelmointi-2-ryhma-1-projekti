@@ -63,6 +63,7 @@ export class ArticleService{
             // Query tietokantaan
             const insertedArticle = await supabase.from('articles').insert({
                 title: createArticleReq.title,
+                description: createArticleReq.description,
                 content: createArticleReq.content,
                 user_id: user.userId
             })
@@ -86,7 +87,7 @@ export class ArticleService{
         // Yritetään muokata artikkelia
         try{
             // Query tietokantaan
-            const modifiedArticle = await supabase.from('articles').update({ title: title, content: content }).eq('id', id)
+            const modifiedArticle = await supabase.from('articles').update({ title: title, description: description, content: content }).eq('id', id)
 
             // Jos query palauttaa 204 No Content, palataan
             if (modifiedArticle.status === 204) {
