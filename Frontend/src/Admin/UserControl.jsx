@@ -1,27 +1,93 @@
-import { useLoaderData } from "react-router-dom"
+import { useLoaderData, useNavigate } from "react-router-dom"
+import {FaRegTrashAlt} from "react-icons/fa"
+import { LuPenTool } from "react-icons/lu"
 
 
 export function UserControl(){
 
+    const navigate = useNavigate()
+
     // Loader lataa käyttäjät
     const userData = useLoaderData()
 
+    // Käyttjän poisto
+    async function DeleteUser(user){
+        // Kysytään ensin varmennus
+        const confirmation = confirm(`Haluatko poistaa käyttäjän ${user.first_name} ${user.last_name}`)
+        if (!confirmation) return
+
+        const res = await fetch(`http://localhost:3000/users/${user.id}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if (!res.ok){
+            return alert("Käyttäjän poisto epäonnistui")
+        }
+
+        return navigate("/admin/users", {replace: true})
+
+    }
+
+    async function ModifyUserRole(user, newRole){
+        // Jos roolia ei muutettu ja nappia painetaa, ei tehdä mitään
+        if (user.role === newRole){
+            return
+        }
+
+        // Kysytään ensin varmennus
+        const confirmation = confirm(`Haluatko muokata käyttäjän ${user.first_name} ${user.last_name} roolia ${user.role} -> ${newRole}`)
+        if (!confirmation) return
+
+        const res = await fetch(`http://localhost:3000/users/role/${user.id}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({role: newRole})
+        })
+
+        if (!res.ok){
+            return alert("Roolin muutos ei onnistunut")
+        }
+
+        return navigate("/admin/users", {replace: true})
+    }
+
+
+
     // Lähinnä käyttäjien listaus. Nappi jolla admin voi poistaa käyttäjän 
     return (
-        <div>
+        <div className="w-4/5">
+            <div className="grid grid-cols-6 gap-2">
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Etunimi</p>
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Sukunimi</p>
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Käyttäjätunnus</p>
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Rooli</p>
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Muokkaa roolia</p>
+                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Poista käyttäjä</p>
+            </div>
             { userData.map((user, key) => {
                 return (
                     
-                    <div key={key} className="flex items-center ml-5">
-                        <section>
-                            <p>{user.first_name} {user.last_name}, {user.username}, {user.role}</p>
-
-                        </section>
-                        <button className="btn ml-5 my-5">Poista</button>
+                    <div key={user.id} className="grid grid-cols-6 items-center gap-2 my-2">
+                        <p className="text-start border-2 border-zinc-300 p-2">{user.first_name}</p>
+                        <p className="text-start border-2 border-zinc-300 p-2">{user.last_name}</p>
+                        <p className="text-start border-2 border-zinc-300 p-2">{user.username}</p>
+                        <select id={`roleOption${user.id}`} className="text-start border-2 border-zinc-300 p-2" defaultValue={user.role}>
+                            <option value="admin" className="bg-zinc-500">Admin</option>
+                            <option value="writer" className="bg-zinc-500">Writer</option>
+                            <option value="user" className="bg-zinc-500">User</option>
+                        </select>
+                        <button className="btn w-fit m-auto" onClick={() => {ModifyUserRole(user, document.getElementById(`roleOption${user.id}`).value)}}><LuPenTool /></button>
+                        <button className="btn w-fit m-auto" onClick={() => {DeleteUser(user)}}><FaRegTrashAlt /></button>
                     </div>
-                )
-            })
-
+                    )
+                })
             }
         </div>
     )
@@ -30,6 +96,32 @@ export function UserControl(){
 
 // Lataa käyttäjät
 export async function UserControlLoader(){
+
+    // Tarkistetaan ensin käyttäjän rooli
+    const adminRes = await fetch("http://localhost:3000/users/whoami", {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-type": "application/json"
+            },
+        })
+    
+    // Virhe tilanteissa palauta viesti takaisin komponentille
+    if (!adminRes.ok){
+        if (adminRes.status == 401){
+            throw new Response("Ei oikeuksia päästä sivulle", {status: adminRes.status})
+        }
+        else {
+            throw new Response("Palvelussamme saattaa olla ongelma", {status: adminRes.status})
+        }
+
+    }
+
+    // Tarkistetaan admin
+    const adminData = await adminRes.json()
+    if (adminData.role !== "admin"){
+        throw new Response("Ei oikeuksia päästä sivulle", {status: adminRes.status})
+    }
 
     const res = await fetch("http://localhost:3000/users", {
         method: "GET",

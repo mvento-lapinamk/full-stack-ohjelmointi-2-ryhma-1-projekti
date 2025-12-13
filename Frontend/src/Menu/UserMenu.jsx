@@ -19,16 +19,26 @@ export function UserMenu({headerHeight, logoutAction, userRole}){
             </button>
             <div className={`slide-menu ${open ? "open": ""}`} style={{top: headerHeight}}>
                 <ul>
-                    <li className="menu-item" onClick={() => navigate("my/profile")}>Profiili</li>
+                    <li className="menu-item" onClick={() => {
+                        setOpen(false)
+                        navigate("my/profile")}}>Profiili</li>
                     {userRole === "admin" ? ( // Adminin extra osat
                         <>
-                            <li className="menu-item" onClick={() => navigate("admin/users")}>Hallinnoi käyttäjiä</li>
-                            <li className="menu-item" onClick={() => navigate("/article/create")}>Luo artikkeli</li>
+                            <li className="menu-item" onClick={() => {
+                                setOpen(false)
+                                navigate("admin/users")}}>Hallinnoi käyttäjiä</li>
+                            <li className="menu-item" onClick={() => {
+                                setOpen(false)
+                                navigate("/article/create")}}>Luo artikkeli</li>
                         </>
                         ) 
                         : userRole === "writer" ? ( // Kirjoittajan lisäosa
                             <>
-                                <li className="menu-item" onClick={() => navigate("/article/create")}>Luo artikkeli</li>
+                                <li className="menu-item" onClick={() => {
+                                    setOpen(false)
+                                    navigate("/article/create")}
+                                    
+                                }>Luo artikkeli</li>
                             </>
                         ): null
                     }

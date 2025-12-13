@@ -88,8 +88,8 @@ export function ArticleView(){
                 {article ? (
                     <>
                         <h3 className="my-3 text-3xl">{article.title}</h3>
-                        <p>{article.description}</p>
-                        <p>{article.content}</p>
+                        <p className="my-5">{article.description}</p>
+                        <p className="text-start">{article.content}</p>
                     </>
 
                 ) : (
