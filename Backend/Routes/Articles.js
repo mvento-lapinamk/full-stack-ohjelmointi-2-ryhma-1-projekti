@@ -57,7 +57,7 @@ articles.post("/", requireAuth, async (req, res) => {
 articles.patch("/{:id}", requireAuth, async (req, res) => {
     try{
         const modifyArticleRequest = ModifyArticleSchema.parse(req.body)
-        const modifiedArticle = await articleService.ChangeArticle(req.params.id, modifyArticleRequest.title, modifyArticleRequest.content)
+        const modifiedArticle = await articleService.ChangeArticle(req.params.id, modifyArticleRequest.title, modifyArticleRequest.description, modifyArticleRequest.content)
 
         res.status(204).json()
 

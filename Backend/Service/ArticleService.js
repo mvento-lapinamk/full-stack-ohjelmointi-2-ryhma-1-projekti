@@ -83,7 +83,7 @@ export class ArticleService{
     }
 
     // Artikkelin muokkaaminen
-    async ChangeArticle(id, title, content){
+    async ChangeArticle(id, title, description, content){
         // Yritetään muokata artikkelia
         try{
             // Query tietokantaan
