@@ -38,13 +38,18 @@ export class CommentService{
             const comments = await supabase.from('comments').select('*').eq('article_id', [id])
 
             // Jos kantahaku on 200 OK ja data array ei ole tyhjä, palautetaan artikkelin kommentit
-            if (comments.status === 200 && comments.data.length !== 0) {
+            //if (comments.status === 200 && comments.data.length !== 0) {
+            //    return comments.data
+            //}
+
+            // Palautetaan kommentit, vaikka niitä ei olisi
+            if (comments.status === 200) {
                 return comments.data
             }
             // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
-            else if (comments.status === 200 && comments.data.length === 0) {
-                throw new Error("Comments not found")
-            }
+            //else if (comments.status === 200 && comments.data.length === 0) {
+            //    return comments.data
+            //}
             // Muissa tapauksissa palautetaan virheviesti
             else {
                 throw new Error("Something went wrong")
