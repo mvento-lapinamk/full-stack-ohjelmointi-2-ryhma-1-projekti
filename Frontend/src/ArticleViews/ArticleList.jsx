@@ -14,11 +14,11 @@ export function ArticleList(){
     // Mäpätään haetut artikkelit artikkelikomponentteihin
     return (
         <>
-            {articles.map((article, key) => {
+            {articles.map((article, key) => { 
                 // Artikkelia klikataa -> ohjataan sivulle, jossa haetaan artikkelin tiedot
                 return( 
-                    <Link to={`./article/${article.id}`} key={key} state={article.user_id} className="mx-auto my-5 w-2/5 border-2 p-5">
-                        <ArticleCard title={article.title} content={article.content} created={article.created} userId={article.user_id} />
+                    <Link to={`./article/${article.id}`} key={key} className="mx-auto my-5 w-2/5 border-2 p-5">
+                        <ArticleCard articleData={article} />
                     </Link>
                 )
             })}

@@ -13,6 +13,8 @@ export function CreateArticle(){
                 <Form action="/article/create" method="post" className="flex flex-col h-100">
                     <label htmlFor="createArticleTitle" className="text-2xl">Otsikon teksti</label>
                     <input id="createArticleTitle" type="text" name="title" placeholder="Artikkelin otsikko"  className="input"/>
+                    <label htmlFor="createArticleDescription" className="text-2xl">Artikkelin kuvaus</label>
+                    <input id="createArticleDescription" type="text" name="description" placeholder="Artikkelin kuvaus"  className="input"/>
                     <label htmlFor="createArticleContent" className="text-2xl">Artikkelin sisältö</label>
                     <textarea id="createArticleContent" name="content" placeholder="Artikkelin runko" className="articleContent"/>
                     <button type="submit" className="btn my-5 size-fit">Lataa artikkeli</button>

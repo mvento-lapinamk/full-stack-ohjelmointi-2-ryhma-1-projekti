@@ -3,7 +3,7 @@ import { FormatTime } from "../Components/FormatTime"
 
 
 // Yksittäinen etusivulla näytettävä artikkeli
-export function ArticleCard({title, content, created, userId}){
+export function ArticleCard({articleData}){
 
     // Id:llä haettavan käyttäjän state
     const [userData, setUserData] = useState({error: "Not found"})
@@ -28,20 +28,20 @@ export function ArticleCard({title, content, created, userId}){
     }
 
     useEffect(() => {
-        getUser(userId).then(data => {
+        getUser(articleData.user_id).then(data => {
             setUserData(data)
         })
         
     }, [])
 
     // Formatoidaan aika
-    const formatDate = FormatTime(created)
+    const formatDate = FormatTime(articleData.created)
 
     // Content voisi olla tässä tapauksessa lyhyt selitys, ei koko sisältö
     return(
         <div>
-            <h2>{title}</h2>
-            <p className="my-5">{content}</p>
+            <h2>{articleData.title}</h2>
+            <p className="my-5">{articleData.description}</p>
             <p className="text-start">Kirjoittanut: {userData?.first_name && userData?.last_name ? `${userData.first_name} ${userData.last_name}` : userData.error}</p>
             <p className="text-start">{formatDate}</p>
         </div>

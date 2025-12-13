@@ -12,6 +12,7 @@ import { CreateArticle, CreateArticleAction, CreateArticleLoader } from './Artic
 import { ErrorPage } from './CustomException/ErrorPage.jsx'
 import { UserControl, UserControlLoader } from './Admin/UserControl.jsx'
 import { ProfileView, ProfileViewAction } from './ProfileView/ProfileView.jsx'
+import { ModifyArticle, ModifyArticleAction } from './ArticleViews/ModifyArticle.jsx'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       {path: "/logout", action: LogoutAction}, // Kirjaudu ulos
       {path: "/signup", element: <Register />, action: RegisterAction}, // Rekisteröidy
       {path: "/article/:id", element: <ArticleView />, loader: ArticleLoader, action: PostCommentAction}, // Yhden artikkelin näkymä
+      {path: "/article/:id/modify", element: <ModifyArticle />, action: ModifyArticleAction , errorElement: <ErrorPage />}, // Yhden artikkelin näkymä
       {path: "/article/create", element: <CreateArticle />, action: CreateArticleAction, loader: CreateArticleLoader, errorElement: <ErrorPage />}, // Luo artikkeli näkymä
       {path: "/admin/users", element: <UserControl />, loader: UserControlLoader, errorElement: <ErrorPage />}, // Adminin user hallinointi
       {path: "/my/profile", element: <ProfileView />, action: ProfileViewAction, errorElement: <ErrorPage />} // Käyttäjän oma profiilin katselu

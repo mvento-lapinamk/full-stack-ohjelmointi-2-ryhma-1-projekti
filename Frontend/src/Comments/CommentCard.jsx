@@ -11,7 +11,7 @@ export function CommentCard({comment, webUser, onDelete}){
     // Tällöin näytetään roskis jolla kommentin voi poistaa
     let sameUser = false
     if (webUser?.id){
-        sameUser = comment.user_id == webUser?.id
+        sameUser = comment.user_id == webUser.id
         
     }
 

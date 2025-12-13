@@ -46,7 +46,7 @@ export function CommentList({article_id}){
 
     return (
         <div className="commentsSection">
-            {comments ? comments.map((comment) => {
+            {comments.length !== 0 ? comments.map((comment) => {
                 return (<CommentCard key={comment.id} comment={comment} webUser={user} onDelete={updateComments} />)
             }) : <p>Article has no comments</p>}
         </div>

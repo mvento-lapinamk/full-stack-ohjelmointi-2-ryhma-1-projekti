@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { Form, redirect, useActionData, useLoaderData, useLocation, useParams, useRouteLoaderData } from "react-router-dom";
+import { Form, Link, redirect, useActionData, useLoaderData, useLocation, useParams, useRouteLoaderData } from "react-router-dom";
 import { CommentList } from "../Comments/CommentList";
 import {FaRegTrashAlt} from "react-icons/fa"
+import { LuPenTool } from "react-icons/lu"
 
 
 // Loaderilla haetaan oikea artikkeli
 export function ArticleView(){
-
-    
-    // Locationin statessa kirjoittajan id
-    const articleUserId = useLocation()
     
     // Tähän stateen haetaan kirjoittajan tiedot articleUserId.taten avulla
     const [articleUser, setArticleUser] = useState([])
@@ -20,7 +17,7 @@ export function ArticleView(){
 
     // Jos käyttäjä kirjoittanut artikkelin. Annetaan mahdollisuus muokata tai poistaa.
     if(user){
-        if (user.id === articleUserId.state){
+        if (user.id === articleUser.id){
             sameUser = true
         }
         else{
@@ -38,8 +35,8 @@ export function ArticleView(){
 
 
     // Hae artikkelin kirjoittanut käyttäjä
-    async function getUser(id){
-        const res = await fetch(`http://localhost:3000/users/${id}`, {
+    async function getUser(userid){
+        const res = await fetch(`http://localhost:3000/users/${userid}`, {
             method: "GET",
             include: "credentials",
             headers: {
@@ -56,7 +53,8 @@ export function ArticleView(){
         return await res.json()
     }
     useEffect(() => {
-        getUser(articleUserId.state).then(data => {
+
+        getUser(article.user_id).then(data => {
             setArticleUser(data)
         })
     },[])
@@ -77,7 +75,9 @@ export function ArticleView(){
                 <div className="mt-auto flex">
                     <p className="mr-auto">Kirjoittaja: {articleUser.first_name} {articleUser.last_name}</p>
                     { sameUser ? <>
-                        <button className="ml-auto size-fit cursor-pointer"> <i> <FaRegTrashAlt/> </i> </button>
+                    <Link to={`/article/${id}/modify`} state={article}>
+                        <button className="ml-auto size-fit cursor-pointer"> <i> <LuPenTool /> </i> </button>
+                    </Link>
                         <button className="ml-5 size-fit cursor-pointer"> <i> <FaRegTrashAlt/> </i> </button> </> : <></>}
                 </div>
             </div>
@@ -146,3 +146,4 @@ export async function ArticleLoader({params}){
     return article
 
 }
+
