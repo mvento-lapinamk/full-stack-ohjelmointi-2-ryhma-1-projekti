@@ -226,6 +226,39 @@ export class UserService{
         }
     }
 
+    // Käyttäjän salasanan muuttaminen
+    async ChangeRole(id, role){
+        // Yritetään muuttaa salasana
+        try{
+            // Query tietokantaan - Tarkistetaan löytyykö päivitettävä id tietokannasta
+            const useridcheck = await supabase.from('users').select('*').eq('id', id)
+
+            // Jos kantahaku on 200 OK ja data array ei ole tyhjä, muutetaan rooli
+            if (useridcheck.status === 200 && useridcheck.data.length !== 0) {
+
+                // Query tietokantaan
+                const modifiedUser = await supabase.from('users').update({ role: role }).eq('id', id)
+
+                // Jos query palauttaa 204 No Content, palataan
+                if (modifiedUser.status === 204) {
+                    return
+                }
+            }
+            // Jos kantahaku on 200 OK mutta data array on tyhjä, palautetaan viesti
+            else if (useridcheck.status === 200 && useridcheck.data.length === 0) {
+                throw new Error("User not found")
+            }
+            // Muissa tapauksissa palautetaan virheviesti
+            else {
+                throw new Error("Something went wrong")
+            }
+        }
+        // Jos jokin menee pieleen, palautetaan virheviesti
+        catch (err){
+            throw new Error(err.message)
+        }
+    }
+
     // Poistetaan tietty käyttäjä id:n perusteella
     async DeleteUser(id, user){
         // Yritetään poistaa käyttäjä

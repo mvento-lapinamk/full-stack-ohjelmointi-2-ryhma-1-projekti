@@ -1,6 +1,6 @@
 import {Router} from "express"
 import { UserService } from "../Service/UserService.js"
-import { ChangePswSchema, CreateUserSchema, LoginUserSchema, ModifyUserSchema } from "../Models/UserSchemas.js"
+import { ChangePswSchema, ChangeRoleSchema, CreateUserSchema, LoginUserSchema, ModifyUserSchema } from "../Models/UserSchemas.js"
 import { requireAdmin, requireAuth } from "../middleware/auth.js"
 
 const userService = new UserService()
@@ -150,7 +150,28 @@ users.patch("/username/{:id}", requireAuth, async (req, res) => {
 users.patch("/password/{:id}", requireAuth, async (req, res) => {
     try{
         const modifyPSWReq = ChangePswSchema.parse(req.body)
-        const modifiedUser = await userService.ChangePassword(req.params.id, modifyPSWReq.password)
+        const modifiedUser = await userService.ChangeRole(req.params.id, modifyPSWReq.password)
+
+        res.status(204).json()
+
+    } catch (err){
+        if (err.name == "ZodError"){
+            const zodErrorFlattened = err.flatten()
+            const zodErrorStringified = JSON.stringify(zodErrorFlattened.fieldErrors)
+            res.status(400).json({error: "Invalid request body", detail: zodErrorStringified})
+        }
+        else {
+            res.status(500).json({error: err.message})
+        }
+
+    }
+})
+
+// // Muutetaan käyttäjän rooli id:n perusteella
+users.patch("/role/{:id}", requireAdmin, async (req, res) => {
+    try{
+        const modifyRoleReq = ChangeRoleSchema.parse(req.body)
+        const modifiedUser = await userService.ChangeRole(req.params.id, modifyRoleReq.role)
 
         res.status(204).json()
 

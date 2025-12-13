@@ -22,3 +22,7 @@ export const ModifyUserSchema = z.object({
 export const ChangePswSchema = z.object({
     password: z.string().min(8)
 })
+
+export const ChangeRoleSchema = z.object({
+    role: z.enum(["admin", "writer", "user"], z.string())
+})
