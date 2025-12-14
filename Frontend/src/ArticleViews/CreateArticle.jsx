@@ -73,4 +73,10 @@ export async function CreateArticleLoader(){
         }
 
     }
+
+    const user = await res.json()
+
+    if (user.role == "user"){
+        throw new Response("Ei oikeuksia päästä sivulle", {status: res.status})
+    }
 }

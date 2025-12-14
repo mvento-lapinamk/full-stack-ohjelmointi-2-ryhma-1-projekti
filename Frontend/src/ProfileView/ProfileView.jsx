@@ -47,11 +47,11 @@ export function ProfileView(){
 
     return (
         <>
-            <div>
-                <h1>Profiilisi</h1>
-                <p>{user.first_name ? user.first_name : ""} {user.last_name ? user.last_name : ""}</p>
-                <p>Käyttäjätunnus: {user.username}</p>
-                <p>Käyttäjä luotu: {formattedTime}</p>
+            <div className="w-fit mx-auto">
+                <h1 className="my-3">Profiilisi</h1>
+                <p className="text-start">Nimi: {user.first_name ? user.first_name : ""} {user.last_name ? user.last_name : ""}</p>
+                <p className="text-start">Käyttäjätunnus: {user.username}</p>
+                <p className="text-start">Käyttäjä luotu: {formattedTime}</p>
                 <button className="btn my-5 mr-2" onClick={() => {
                     if (showUnameForm){
                         setShowUnameForm(false)
