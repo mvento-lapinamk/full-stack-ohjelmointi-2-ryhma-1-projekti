@@ -5,7 +5,7 @@ function Footer(){
     return <>
         <footer>
             <div>
-                Footer
+                &copy; 2025 Lapin AMK FullStack 2 Ryhmä 1
             </div>
 
         </footer>

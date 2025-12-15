@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     id: "root",
     element: <App />,
     loader: HeaderLoader,
-    hydrateFallbackElement: <div>Loading</div>,
+    hydrateFallbackElement: <div>Ladataan</div>,
     children: [
       {path: "/", element: <ArticleList />, loader: ArticleListLoader, errorElement: <ErrorPage />}, // Etusivu
       {path: "/login", element: <Login />, action: LoginAction}, // Kirjaudu

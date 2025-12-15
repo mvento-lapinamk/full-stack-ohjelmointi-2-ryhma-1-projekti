@@ -9,15 +9,24 @@
   flex-direction: column;
 }
 
+@theme {
+    --color-news-blue: #0014ab;
+    --color-news-blue-light: #7d99d4;
+    --color-news-blue2: #0964e3;
+    --color-news-gray-light: #e8e8e8;
+}
 
 /* Light theme */
 @media (prefers-color-scheme: light){
+  body {
+    @apply bg-news-gray-light
+  }
   header {
-    @apply w-full p-5 flex bg-yellow-300
+    @apply w-full mb-12 p-5 flex bg-news-blue text-white items-center
   }
 
   footer {
-    @apply w-full flex p-5 bg-yellow-300
+    @apply w-full p-5 bg-news-gray-light content-center text-sm
   }
 
   h1 {
@@ -29,23 +38,47 @@
   }
 
   .btn {
-    @apply p-2 border-2 rounded-sm bg-gray-300 border-amber-100 text-black cursor-pointer
+    @apply p-2 border-none rounded-sm bg-news-blue2 border-amber-100 text-white cursor-pointer
+  }
+
+  header .btn {
+    @apply bg-white text-black
   }
 
   input {
-    @apply p-1 my-2 border-2 rounded-sm  bg-gray-300 border-amber-100 text-black
+    @apply p-1 my-2 border-none rounded-sm bg-white text-black
+  }
+
+  textarea {
+    @apply p-1 my-2 border-none rounded-sm bg-white text-black
   }
 
   .commentsSection {
-    @apply size-fit px-10 h-30 overflow-auto border-amber-100 border-2
+    @apply size-3/5 px-10 overflow-auto border-none
   }
 
   .commentCard {
-    @apply flex flex-col flex-1
+    @apply flex flex-col flex-1 bg-white mb-3 px-6 pt-5 pb-3
+  }
+
+  .articleCard {
+    @apply bg-white border-none
+  }
+
+  .articleCard h1 {
+    @apply text-5xl font-bold
+  }
+
+  .article {
+    @apply w-3/5 px-6 pt-3 py-6 bg-white border-none
+  }
+
+  .article h1 {
+    @apply text-5xl font-bold
   }
 
   .articleContent{
-    @apply border-2 border-amber-100 bg-gray-300 h-100
+    @apply border-none bg-white h-100
   }
 
   .error {
@@ -53,7 +86,7 @@
   }
 
   .slide-menu {
-    @apply fixed -right-1/4 p-1 w-fit h-fit border-2 border-amber-100 bg-gray-300 text-black transition-all delay-75 duration-150 ease-in
+    @apply fixed -right-1/4 p-1 w-fit h-fit border-none bg-news-blue text-black transition-all delay-75 duration-150 ease-in
   }
 
   .slide-menu.open {
@@ -61,19 +94,26 @@
   }
 
   .menu-item {
-    @apply p-2 m-2 cursor-pointer border-2 border-zinc-50 bg-zinc-500
+    @apply p-2 m-2 cursor-pointer border-none bg-white rounded-sm
+  }
+
+  .userControlHeader {
+    @apply border-t-0 border-r-0 border-l-0 border-b-1
   }
 }
 
 
 /* Dark theme */
 @media (prefers-color-scheme: dark){
+  body {
+    @apply bg-black
+  }
   header {
-    @apply w-full h-20 p-5 flex bg-zinc-800
+    @apply w-full mb-12 p-5 flex bg-news-blue text-white items-center
   }
 
   footer {
-    @apply w-full p-5 flex bg-zinc-800
+    @apply w-full p-5 bg-black content-center text-sm
   }
 
   h1 {
@@ -85,23 +125,47 @@
   }
 
   .btn {
-    @apply p-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white cursor-pointer
+    @apply p-2 border-none rounded-sm bg-news-blue2 border-amber-100 text-white cursor-pointer
+  }
+
+  header .btn {
+    @apply bg-white text-black
   }
 
   input {
-    @apply p-2 my-2 border-2 rounded-sm bg-zinc-600 border-blue-300 text-white
+    @apply p-1 my-2 border-none rounded-sm bg-zinc-800 text-white
+  }
+
+  textarea {
+    @apply p-1 my-2 border-none rounded-sm bg-zinc-800 text-white
   }
 
   .commentsSection {
-    @apply size-fit px-5 w-9/10 h-40 overflow-auto border-blue-300 border-2
+    @apply size-3/5 px-10 overflow-auto border-none
   }
 
   .commentCard {
-    @apply flex flex-col my-5 p-5 border-2 border-zinc-400 bg-zinc-700
+    @apply flex flex-col flex-1 bg-zinc-800 mb-3 px-6 pt-5 pb-3
+  }
+
+  .articleCard {
+    @apply bg-zinc-800 border-none
+  }
+
+  .articleCard h1 {
+    @apply text-5xl font-bold
+  }
+
+  .article {
+    @apply w-3/5 px-6 pt-3 py-6 bg-zinc-800 border-none
+  }
+
+  .article h1 {
+    @apply text-5xl font-bold
   }
 
   .articleContent{
-    @apply border-2 border-blue-400 bg-zinc-700 h-100
+    @apply border-none bg-zinc-800 h-100 text-white
   }
 
   .error {
@@ -109,7 +173,7 @@
   }
 
   .slide-menu {
-    @apply fixed -right-1/4 p-1 w-fit h-fit border-2 border-blue-400 bg-zinc-400 text-white transition-all delay-75 duration-150 ease-in
+    @apply fixed -right-1/4 p-1 w-fit h-fit border-none bg-news-blue text-black transition-all delay-75 duration-150 ease-in
   }
 
   .slide-menu.open {
@@ -117,6 +181,10 @@
   }
 
   .menu-item {
-    @apply p-2 m-2 cursor-pointer border-2 border-zinc-50 bg-zinc-500
+    @apply p-2 m-2 cursor-pointer border-none bg-white rounded-sm
+  }
+
+  .userControlHeader {
+    @apply border-t-0 border-r-0 border-l-0 border-b-1
   }
 }

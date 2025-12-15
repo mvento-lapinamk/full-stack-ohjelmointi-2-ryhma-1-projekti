@@ -8,7 +8,9 @@ export function Register(){
 
     return (
         <div>
-            <h4 className="text-2xl my-5">Rekisteröidy</h4>
+            <h3 className="mb-3 text-sm underline"><a href="/">Palaa etusivulle</a></h3>
+            <h4 className="text-2xl mx-auto mt-5 px-5 items-center">Rekisteröidy käyttäjäksi</h4>
+            <p className="h-3"></p>
             <Form action="/signup" method="post" className="flex flex-col items-center">
                 <label htmlFor="signupFName" className="sr-only">Firstname</label>
                 <input type="text" name="first_name" placeholder="Etunimi"/>
@@ -18,9 +20,17 @@ export function Register(){
                 <input id="signupUName" type="text" minLength={8} name="username" placeholder="Käyttäjänimi"/>
                 <label htmlFor="signupPsw" className="sr-only">Password</label>
                 <input id="signupPsw" type="password" minLength={8} name="password" placeholder="Salasana"/>
-                <button type="submit" className="btn">Rekisteröidy</button>
+                {error ? <p className="error">{error.message}</p> : <p className=""></p>}
+                <button type="submit" className="btn mt-3 mb-5 size-fit">Rekisteröidy</button>
+                <p className="h-3"></p>
             </Form>
-            {error ? <p className="error">{error.message}</p> : <p className="h-6"></p>}
+
+            <p className="h-2"></p>
+            <p>Onko sinulla jo tunnukset?</p>
+            <p className="h-3"></p>
+            <a href="/login">
+                <button className="btn">Kirjaudu sisään</button>
+            </a>
         </div>
     )
 }

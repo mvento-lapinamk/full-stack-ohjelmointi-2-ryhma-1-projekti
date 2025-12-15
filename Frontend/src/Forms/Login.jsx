@@ -9,20 +9,25 @@ export function Login(){
 
     return (
         <div className="mx-auto mt-5 px-5 items-center">
+            <h3 className="mb-3 text-sm underline"><a href="/">Palaa etusivulle</a></h3>
             <h4 className="text-2xl">Kirjaudu sisään</h4>
+            <p className="h-3"></p>
             <Form action="/login" method="post" className="flex flex-col items-center">
                 <label htmlFor="loginUsername" className="sr-only">Username</label>
                 <input id="loginUsername" type="text" name="username" placeholder="Käyttäjänimi"/>
                 <label htmlFor="loginPassword" className="sr-only">Password</label>
                 <input id="loginPassword" type="password" name="password" placeholder="Salasana"/>
-                {error ? <p className="error">{error.error}</p> : <p className="h-6"></p>}
-                <button type="submit" className="btn mb-5 size-fit">Kirjaudu</button>
+                {error ? <p className="error">{error.error}</p> : <p className=""></p>}
+                <button type="submit" className="btn mt-3 mb-5 size-fit">Kirjaudu</button>
+                <p className="h-3"></p>
             </Form>
             
 
-            <p>Eikö tunnusta? Rekisteröidy käyttäjäksi</p>
+            <p className="h-2"></p>
+            <p>Uusi käyttäjä? Rekisteröidy palveluun:</p>
+            <p className="h-3"></p>
             <a href="/signup">
-                <button className="btn">Rekisteröitymään</button>
+                <button className="btn">Luo tunnus</button>
             </a>
         </div>
     )
@@ -49,7 +54,7 @@ export async function LoginAction({request}){
     })
 
     if (!res.ok){
-        return {error: "Login failed"}
+        return {error: "Kirjautuminen epäonnistui"}
     }
     
     // Kirjatutunut käyttäjä ohjataan etusivulle

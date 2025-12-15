@@ -62,14 +62,14 @@ export function UserControl(){
 
     // Lähinnä käyttäjien listaus. Nappi jolla admin voi poistaa käyttäjän 
     return (
-        <div className="w-4/5">
+        <div className="flex w-3/5 flex-col mx-auto flex-1">
             <div className="grid grid-cols-6 gap-2">
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Etunimi</p>
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Sukunimi</p>
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Käyttäjätunnus</p>
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Rooli</p>
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Muokkaa roolia</p>
-                <p className="text-start border-2 border-zinc-300 bg-zinc-700 p-2">Poista käyttäjä</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Etunimi</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Sukunimi</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Käyttäjätunnus</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Rooli</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Muokkaa roolia</p>
+                <p className="userControlHeader text-start border-2 p-2 font-bold">Poista käyttäjä</p>
             </div>
             { userData.map((user, key) => {
                 return (

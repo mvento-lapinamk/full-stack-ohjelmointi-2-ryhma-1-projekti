@@ -64,12 +64,16 @@ export function CommentCard({comment, webUser, onDelete}){
 
     return (
         <div className="commentCard">
-            <p className="text-start">Kommentti: {comment.content}</p>
-            <p className="text-start">Käyttäjä: {userData ? `${userData.first_name} ${userData.last_name}`: userData.error}</p>
-            <div className="flex items-center">
-                <p className="text-start inline size-fit">Aika: {formatDate}</p>
+            <p className="text-start font-bold">{userData ? `${userData.username}`: userData.error}</p>
+            <p className="text-start inline size-fit text-sm">{formatDate}</p>
+            <p className="h-3"></p>
+            <p className="text-start">{comment.content}</p>
+            
+            <div className="flex">
                 {sameUser ? <button className="ml-auto size-fit cursor-pointer" onClick={(deleteComment)}> <i> <FaRegTrashAlt/> </i> </button> : <></>}
             </div>
+
+            <p className="h-6"></p>
 
         </div>
     )

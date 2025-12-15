@@ -3,6 +3,7 @@ import { Form, Link, redirect, useActionData, useLoaderData, useNavigate, usePar
 import { CommentList } from "../Comments/CommentList";
 import {FaRegTrashAlt} from "react-icons/fa"
 import { LuPenTool } from "react-icons/lu"
+import { FormatTime } from "../Components/FormatTime"
 
 
 // Loaderilla haetaan oikea artikkeli
@@ -80,15 +81,20 @@ export function ArticleView(){
         })
     },[])
 
-
+    // Formatoidaan aika
+    const formatDate = FormatTime(article.created)
 
     return (
-        <div className="flex flex-col w-3/5 mx-auto flex-1 items-center">
-            <div className="flex-1 flex flex-col w-full">
+        <div className="flex w-4/5 flex-col mx-auto flex-1 items-center text-start">
+            <div className="w-3/5">
+                <h3 className="mb-3 text-start underline"><a href="/">Palaa etusivulle</a></h3>
+            </div>
+            <div className="article flex-1 flex flex-col w-full">
                 {article ? (
                     <>
-                        <h3 className="my-3 text-3xl">{article.title}</h3>
-                        <p className="my-5">{article.description}</p>
+                        <h1 className="my-3 text-3xl">{article.title}</h1>
+                        <img className="pt-6 pb-6" src={article.image_url} />
+                        <p className="my-5 italic">{article.description}</p>
                         <p className="text-start">{article.content}</p>
                     </>
 
@@ -96,8 +102,9 @@ export function ArticleView(){
                     <><h3 className="my-3 text-3xl">Not found</h3>
                     <p>Not found</p></>
                 )}
-                <div className="mt-auto flex">
-                    <p className="mr-auto">Kirjoittaja: {articleUser.first_name} {articleUser.last_name}</p>
+                <div className="mt-auto pt-10">
+                    <p className="text-start text-sm font-bold">{articleUser.first_name} {articleUser.last_name}</p>
+                    <p className="text-start text-sm italic">{formatDate}</p>
                     { sameUser ? <>
                     <Link to={`/article/${id}/modify`} state={article}>
                         <button className="ml-auto size-fit cursor-pointer"> <i> <LuPenTool /> </i> </button>
@@ -107,10 +114,12 @@ export function ArticleView(){
             </div>
             <CommentList article_id={id}/>
             {actionData ? <p className="error">{actionData.message}</p> : <p className="h-6"></p>}
-            <Form method="post" action={`/article/${id}`} className="mb-2">
-                <input type="text" name="content" placeholder="Leave comment" className=""/>
-                <button className="btn ml-2">Lähetä kommentti</button>
-            </Form>
+            <div className="flex items-start">
+                <Form method="post" action={`/article/${id}`} className="mb-2">
+                    <input type="text" name="content" placeholder="Kirjoita kommentti" className=""/>
+                    <button className="btn ml-2">Lähetä kommentti</button>
+                </Form>
+            </div>
         </div>
     )
 }

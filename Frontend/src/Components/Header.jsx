@@ -26,14 +26,16 @@ export function Header(){
     return <>
     
         <header ref={headerRef} className="w-full p-5 flex bg-zinc-600">
-            <img src={logo} alt="logo" />
-            <Link to={"/"}>
-                <h1 className="mx-5">Otsikko</h1>
-            </Link>
+            <div className="flex-none">
+                <Link to={"/"}>
+                    <h1 className="mx-5">Digilehti</h1>
+                </Link>
+            </div>
+            <div className="flex-1 text-right pr-5">
+                <p className="leading-none">Hei {data.username ? data.username : data.message}!</p>
+            </div>
 
-            <p className="leading-none">Terve {data.username ? data.username : data.message}</p>
-
-            {data.role ? <UserMenu headerHeight={headerHeight} logoutAction={LogoutAction} userRole={data.role} /> : <button className="ml-auto btn" onClick={() => navigate("/login")}>Kirjaudu</button>}
+            {data.role ? <UserMenu headerHeight={headerHeight} logoutAction={LogoutAction} userRole={data.role} /> : <button className="ml-auto btn flex" onClick={() => navigate("/login")}>Kirjaudu / Luo tunnus</button>}
 
             
         </header>

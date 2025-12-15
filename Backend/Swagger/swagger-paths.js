@@ -33,6 +33,8 @@
  *                       type: integer
  *                     description:
  *                       type: string
+ *                     image_url:
+ *                       type: string
  * 
  *         500:
  *           description: Internal Server Error
@@ -134,6 +136,9 @@
  *                     type: integer
  *                   description:
  *                     type: string
+ *                   image_url:
+ *                     type: string
+ * 
  *         500:
  *           description: Internal Server Error
  *           content: 

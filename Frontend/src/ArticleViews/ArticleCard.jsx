@@ -39,11 +39,12 @@ export function ArticleCard({articleData}){
 
     // Content voisi olla tässä tapauksessa lyhyt selitys, ei koko sisältö
     return(
-        <div>
-            <h2>{articleData.title}</h2>
-            <p className="my-5">{articleData.description}</p>
-            <p className="text-start">Kirjoittanut: {userData?.first_name && userData?.last_name ? `${userData.first_name} ${userData.last_name}` : userData.error}</p>
-            <p className="text-start">{formatDate}</p>
+        <div className="articleCard p-5">
+            <h1 className="text-start">{articleData.title}</h1>
+            <img className="pt-6 pb-6" src={articleData.image_url} />
+            <p className="my-5 text-start">{articleData.description} <span className="underline">Lue lisää...</span></p>
+            <p className="text-start text-sm italic">Kirjoittanut: {userData?.first_name && userData?.last_name ? `${userData.first_name} ${userData.last_name}` : userData.error}</p>
+            <p className="text-start text-sm italic">{formatDate}</p>
         </div>
     )
 }

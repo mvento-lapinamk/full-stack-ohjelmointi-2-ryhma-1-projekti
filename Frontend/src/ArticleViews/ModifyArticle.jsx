@@ -21,13 +21,13 @@ export function ModifyArticle(){
             <div className="mx-auto mt-5 w-3/5 flex-1">
                 <Form action={`/article/${id}/modify`} method="patch" className="flex flex-col h-100">
                     <input type="hidden" value={JSON.stringify(article)} name="defaultArticle" />
-                    <label htmlFor="modifyArticleTitle" className="text-2xl">Otsikon teksti</label>
+                    <label htmlFor="modifyArticleTitle" className="mb-2 text-start text-2xl">Otsikon teksti</label>
                     <input id="modifyArticleTitle" type="text" name="newTitle" defaultValue={article.title}  className="input" />
-                    <label htmlFor="modifyArticleDescription" className="text-2xl">Otsikon teksti</label>
+                    <label htmlFor="modifyArticleDescription" className="mt-4 mb-2 text-start text-2xl">Artikkelin kuvaus</label>
                     <input id="modifyArticleDescription" type="text" name="newDescription" defaultValue={article.description}  className="input" />
-                    <label htmlFor="modifyArticleContent" className="text-2xl">Artikkelin sisältö</label>
+                    <label htmlFor="modifyArticleContent" className="mt-4 mb-2 text-start text-2xl">Artikkelin sisältö</label>
                     <textarea id="modifyArticleContent" name="newContent" placeholder="Artikkelin runko" defaultValue={article.content} className="articleContent"/>
-                    <button type="submit" className="btn my-5 size-fit">Lataa artikkeli</button>
+                    <button type="submit" className="btn my-5 size-fit">Tallenna</button>
                 </Form>
                 { error ? <p className="error">{error.message}</p> : <p className="h-6"></p> }
             </div>

@@ -46,6 +46,7 @@ export function CommentList({article_id}){
 
     return (
         <div className="commentsSection">
+            <h2 className="mt-6 mb-3 text-start">Kommentit:</h2>
             {comments.length !== 0 ? comments.map((comment) => {
                 return (<CommentCard key={comment.id} comment={comment} webUser={user} onDelete={updateComments} />)
             }) : <p>Article has no comments</p>}
