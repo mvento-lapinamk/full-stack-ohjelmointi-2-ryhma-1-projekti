@@ -31,6 +31,9 @@
  *                       format: date-time
  *                     user_id:
  *                       type: integer
+ *                     description:
+ *                       type: string
+ * 
  *         500:
  *           description: Internal Server Error
  *           content: 
@@ -55,6 +58,8 @@
  *               type: object
  *               properties:
  *                 title:
+ *                   type: string
+ *                 description:
  *                   type: string
  *                 content:
  *                   type: string
@@ -127,6 +132,8 @@
  *                     format: date-time
  *                   user_id:
  *                     type: integer
+ *                   description:
+ *                     type: string
  *         500:
  *           description: Internal Server Error
  *           content: 
@@ -160,6 +167,8 @@
  *                 title:
  *                   type: string
  *                 content:
+ *                   type: string
+ *                 description:
  *                   type: string
  *       responses:
  *         204:
