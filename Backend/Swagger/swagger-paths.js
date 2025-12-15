@@ -629,7 +629,54 @@
  *                     type: string
  *                   detail:
  *                     type: string
- *   
+ *  
+ *   /users/role/{id}:
+ *     patch:
+ *       tags: [
+ *         Users
+ *        ]
+ *       summary: Changes user role by id
+ *       parameters:
+ *         - name: id
+ *           in: path
+ *           description: User ID
+ *           required: true
+ *           schema:
+ *             type: integer
+ *             format: int64
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 role:
+ *                   type: string
+ *       responses:
+ *         204:
+ *           description: A successful response
+ *         500:
+ *           description: Internal Server Error
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *         400:
+ *           description: Bad Request
+ *           content: 
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   error:
+ *                     type: string
+ *                   detail:
+ *                     type: string
+ *  
  *   /users/username/{id}:
  *     patch:
  *       tags: [
