@@ -226,9 +226,9 @@ export class UserService{
         }
     }
 
-    // Käyttäjän salasanan muuttaminen
+    // Käyttäjän roolin muuttaminen
     async ChangeRole(id, role){
-        // Yritetään muuttaa salasana
+        // Yritetään muuttaa rooli
         try{
             // Query tietokantaan - Tarkistetaan löytyykö päivitettävä id tietokannasta
             const useridcheck = await supabase.from('users').select('*').eq('id', id)

@@ -32,7 +32,7 @@ export class CommentService{
 
     // Haetaan kommentit tietyn artikkelin id:n perusteella
     async GetCommentsByArticleId(id){
-        // Yritetään hakea kommentti
+        // Yritetään hakea kommentit
         try{
             // Query tietokantaan
             const comments = await supabase.from('comments').select('*').eq('article_id', [id])

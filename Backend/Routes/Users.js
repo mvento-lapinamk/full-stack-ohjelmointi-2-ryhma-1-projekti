@@ -146,7 +146,7 @@ users.patch("/username/{:id}", requireAuth, async (req, res) => {
     }
 })
 
-// // Muutetaan käyttäjän salasana id:n perusteella
+// Muutetaan käyttäjän salasana id:n perusteella
 users.patch("/password/{:id}", requireAuth, async (req, res) => {
     try{
         const modifyPSWReq = ChangePswSchema.parse(req.body)
@@ -167,7 +167,7 @@ users.patch("/password/{:id}", requireAuth, async (req, res) => {
     }
 })
 
-// // Muutetaan käyttäjän rooli id:n perusteella
+// Muutetaan käyttäjän rooli id:n perusteella
 users.patch("/role/{:id}", requireAdmin, async (req, res) => {
     try{
         const modifyRoleReq = ChangeRoleSchema.parse(req.body)
